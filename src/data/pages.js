@@ -54,7 +54,7 @@ export default [
         "id": 7,
         "name": "Forgot password",
         "image": ForgotPasswordImg,
-        "link": Routes.ForgotPassword.path
+        "link": Routes.Banner.path
     },
     {
         "id": 8,

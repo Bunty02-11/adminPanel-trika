@@ -1,27 +1,23 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran } from "@fortawesome/free-solid-svg-icons";
-import { Breadcrumb } from '@themesberg/react-bootstrap';
-import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
-import { faFacebookF, faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { Col, Row, Form, Card, Button, FormCheck, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { Breadcrumb, Col, Row, Form, Card, Button, Table, Container, InputGroup, Modal } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { Routes } from "../../routes";
-import BgImage from "../../assets/img/illustrations/signin.svg";
-
-import { PageTrafficTable, RankingTable } from "../../components/Tables";
-
 
 export default () => {
-
   const [serviceName, setServiceName] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
-  const [serviceImages, setServiceImages] = useState(null); // Initialize with null
+  const [serviceImages, setServiceImages] = useState(null);
   const [isActive, setIsActive] = useState('false');
-  
+  const [currentPage, setCurrentPage] = useState(0);
+  const [clickedImage, setClickedImage] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [data, setData] = useState([]);
+  const itemsPerPage = 10; // Define itemsPerPage
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const pageData = new FormData();
@@ -30,123 +26,202 @@ export default () => {
     pageData.append('file', serviceImages);
     pageData.append('isActive', isActive)
 
-
     try {
       const response = await axios.post('http://localhost:8000/api/services', pageData, {});
-      console.log(response); // Logging the response for debugging purposes
+      console.log(response);
     } catch (error) {
-      console.error('Error:', error); // Log any errors
+      console.error('Error:', error);
     }
   }
+
   const handleImagesUpload = (event) => {
     const image = event.target.files[0];
     setServiceImages(image);
   }
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
+      console.log(response);
+      setData(data.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/getimage')
+      .then(response => {
+        console.log(response.data);
+        setData(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  }
+
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = (currentPage + 1) * itemsPerPage;
+
+  const handleImageClick = (image) => {
+    setClickedImage(image);
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setClickedImage(null);
+  }
 
   return (
     <>
-      <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2"> {/* Reduced top margin here */}
-        <div className="d-block mb-4 mb-xl-0">
-          <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
-            <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item active>Service</Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-      </div>
-      <section className="d-flex align-items-center my-2 mt-lg-3 mb-lg-5"> {/* Reduced top margin here */}
+      <section className="d-flex align-items-center my-2 mt-lg-3 mb-lg-5">
         <Container>
           <Row>
-            <Col xs={12} lg={6} className="mb-4 mb-lg-0">
-              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0">Service</h3>
-                </div>
-                <Form className="mt-4" onSubmit={handleSubmit}>
-                  <Form.Group id="email" className="mb-4">
-                    <Form.Label>serviceName</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
-                      </InputGroup.Text>
-                      <Form.Control autoFocus required type="Name" placeholder="Title" value={serviceName} onChange={(e) => setServiceName(e.target.value)} />
-                    </InputGroup>
-                  </Form.Group>
-                  <Form.Group id="email" className="mb-4">
-                    <Form.Label>serviceDescription</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
-                      </InputGroup.Text>
-                      <Form.Control autoFocus required type="Name" placeholder="Description" value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} />
-                    </InputGroup>
-                  </Form.Group>
-                  <Form.Group id="image" className="mb-4">
-                    <Form.Label>serviceImage</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
-                      </InputGroup.Text>
-                      <Form.Control
-                        type="file"
-                        accept="images/*"
-                        onChange={handleImagesUpload}
-                        placeholder="Upload Image"
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                  <Form.Group id="confirmPassword" className="mb-4">
-                    <Form.Label>isActive</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
-                      </InputGroup.Text>
-                      <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
-                        <option value="">Select Option</option>
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                      </Form.Select>
-                    </InputGroup>
-                  </Form.Group>
-                  <Button variant="primary" type="submit" className="w-100">
-                    Submit
-                  </Button>
-                </Form>
-              </div>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceName" className="mb-4">
+                <Form.Label>Service Name</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Service Name" value={serviceName} onChange={(e) => setServiceName(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
             </Col>
-            <Col xs={12} lg={6}>
-              <Card border="light" className="shadow-sm">
-                <Card.Header>
-                  <Row className="align-items-center">
-                    <Col>
-                      <h5>Page visits</h5>
-                    </Col>
-                    <Col className="text-end">
-                      <Button variant="secondary" size="sm">See all</Button>
-                    </Col>
-                  </Row>
-                </Card.Header>
-                <Table responsive className="align-items-center table-flush">
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Page name</th>
-                      <th scope="col">Page Views</th>
-                      <th scope="col">Page Value</th>
-                      <th scope="col">Bounce rate</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* {pageVisits.map(pv => <TableRow key={`page-visit-${pv.id}`} {...pv} />)} */}
-                  </tbody>
-                </Table>
-              </Card>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceDescription" className="mb-4">
+                <Form.Label>Service Description</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Service Description" value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceImage" className="mb-4">
+                <Form.Label>Service Image</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="file"
+                    accept="images/*"
+                    onChange={handleImagesUpload}
+                    placeholder="Upload Image"
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="isActive" className="mb-4">
+                <Form.Label>Is Active</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
+                    <option value="">Select Option</option>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                  </Form.Select>
+                </InputGroup>
+              </Form.Group>
             </Col>
           </Row>
+
         </Container>
       </section>
+      <Col xs={12} lg={8} className="mx-auto">
+        <Card border="light" className="shadow-sm">
+          <Card.Header>
+            <Row className="align-items-center">
+              <Col>
+                <h5>Service List</h5>
+              </Col>
+              <Col className="text-end">
+                <Button variant="secondary" size="sm">See all</Button>
+              </Col>
+            </Row>
+          </Card.Header>
+          <Table responsive className="align-items-center table-flush">
+            <thead className="thead-light">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Service Name</th>
+                <th scope="col">Service Description</th>
+                <th scope="col">Service Image</th>
+                <th scope="col">Active</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.slice(startIndex, endIndex).map((row, index) => (
+                <tr key={index}>
+                  <td>{startIndex + index + 1}</td>
+                  <td>{row.serviceName}</td>
+                  <td>{row.serviceDescription}</td>
+                  <td>
+                    {row.serviceImage && (
+                      <img
+                        src={row.serviceImage}
+                        alt="Service Image"
+                        style={{ maxWidth: "100px", cursor: "pointer" }}
+                        onClick={() => handleImageClick(row.serviceImage)}
+                      />
+                    )}
+                  </td>
+                  <td>{row.isActive ? "True" : "False"}</td>
+                  <td>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <div className="d-flex justify-content-center mt-3">
+            <Button
+              variant="light"
+              disabled={currentPage === 0}
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="me-2"
+            >
+              <FontAwesomeIcon icon={faAngleLeft} />
+            </Button>
+            <Button
+              variant="light"
+              disabled={(currentPage + 1) * itemsPerPage >= data.length}
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="ms-2"
+            >
+              <FontAwesomeIcon icon={faAngleRight} />
+            </Button>
+          </div>
+        </Card>
+      </Col>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Zoomed Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
-
-
   );
 };

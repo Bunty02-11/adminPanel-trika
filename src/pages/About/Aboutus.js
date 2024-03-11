@@ -155,7 +155,7 @@ export default () => {
                       <th scope="col">#</th>
                       <th scope="col">Name</th>
                       <th scope="col">CarouselImages</th>
-                      <th scope="col">Active</th>(())
+                      <th scope="col">Active</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>

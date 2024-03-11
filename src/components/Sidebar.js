@@ -97,7 +97,7 @@ export default (props = {}) => {
               </Nav.Link>
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
-              <NavItem title="Volt React" link={Routes.Presentation.path} image={ReactHero} />
+              <NavItem title="Volt React" link={Routes.DashboardOverview.path} image={ReactHero} />
 
                <NavItem title="Dashboard" link={Routes.DashboardOverview.path} icon={faDesktop} /> 
                {/* <NavItem title="Sign In" link={Routes.Signin.path}  icon={faSignInAlt}/>
@@ -117,9 +117,9 @@ export default (props = {}) => {
               <CollapsableNavItem eventKey="examples/" title="About" icon={faFileAlt}>
                 
                 
-                <NavItem title="About us" link={Routes.ForgotPassword.path} />
-                <NavItem title="Slider" link={Routes.ResetPassword.path} />
-                <NavItem title="Testimonial" link={Routes.Lock.path} />
+                <NavItem title="Banner" link={Routes.Banner.path} />
+                <NavItem title="About us" link={Routes.Aboutus.path} />
+                <NavItem title="Testimonial" link={Routes.Testimonial.path} />
               </CollapsableNavItem>
 
               {/* <NavItem external title="Plugins" link="https://demo.themesberg.com/volt-pro-react/#/plugins/datatable" target="_blank" badgeText="Pro" icon={faChartPie} /> */}
@@ -155,7 +155,7 @@ export default (props = {}) => {
                 <NavItem title="Tooltips" link={Routes.Tooltips.path} />
               </CollapsableNavItem>
               {/* <NavItem external title="Themesberg" link="https://themesberg.com" target="_blank" image={ThemesbergLogo} /> */}
-              <Button as={Link} to={Routes.Upgrade.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faSignOutAlt} className="me-1" />Logout</Button>
+              <Button as={Link} to={Routes.Signin.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faSignOutAlt} className="me-1" />Logout</Button>
             </Nav>
           </div>
         </SimpleBar>
