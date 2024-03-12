@@ -10,7 +10,7 @@ import { Routes } from "../../routes";
 export default () => {
   const [serviceName, setServiceName] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
-  const [serviceImages, setServiceImages] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [isActive, setIsActive] = useState('false');
   const [currentPage, setCurrentPage] = useState(0);
   const [clickedImage, setClickedImage] = useState(null);
@@ -19,15 +19,16 @@ export default () => {
   const itemsPerPage = 10; // Define itemsPerPage
 
   const handleSubmit = async (event) => {
+    console.log(event, 'e')
     event.preventDefault();
     const pageData = new FormData();
     pageData.append('serviceName', serviceName);
     pageData.append('serviceDescription', serviceDescription);
-    pageData.append('file', serviceImages);
+    pageData.append('file', imageUrl);
     pageData.append('isActive', isActive)
 
     try {
-      const response = await axios.post('http://localhost:8000/api/services', pageData, {});
+      const response = await axios.post('http://localhost:8000/api/post/services', pageData, {});
       console.log(response);
     } catch (error) {
       console.error('Error:', error);
@@ -36,7 +37,7 @@ export default () => {
 
   const handleImagesUpload = (event) => {
     const image = event.target.files[0];
-    setServiceImages(image);
+    setImageUrl(image);
   }
 
   const handleDelete = async (id) => {
@@ -50,7 +51,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/getimage')
+    axios.get('http://localhost:8000/api/get/services')
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -81,62 +82,68 @@ export default () => {
     <>
       <section className="d-flex align-items-center my-2 mt-lg-3 mb-lg-5">
         <Container>
-          <Row>
-            <Col xs={12} md={6}>
-              <Form.Group id="serviceName" className="mb-4">
-                <Form.Label>Service Name</Form.Label>
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faQuran} />
-                  </InputGroup.Text>
-                  <Form.Control autoFocus required type="text" placeholder="Service Name" value={serviceName} onChange={(e) => setServiceName(e.target.value)} />
-                </InputGroup>
-              </Form.Group>
-            </Col>
-            <Col xs={12} md={6}>
-              <Form.Group id="serviceDescription" className="mb-4">
-                <Form.Label>Service Description</Form.Label>
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faQuran} />
-                  </InputGroup.Text>
-                  <Form.Control autoFocus required type="text" placeholder="Service Description" value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} />
-                </InputGroup>
-              </Form.Group>
-            </Col>
-            <Col xs={12} md={6}>
-              <Form.Group id="serviceImage" className="mb-4">
-                <Form.Label>Service Image</Form.Label>
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faQuran} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="file"
-                    accept="images/*"
-                    onChange={handleImagesUpload}
-                    placeholder="Upload Image"
-                  />
-                </InputGroup>
-              </Form.Group>
-            </Col>
-            <Col xs={12} md={6}>
-              <Form.Group id="isActive" className="mb-4">
-                <Form.Label>Is Active</Form.Label>
-                <InputGroup>
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faQuran} />
-                  </InputGroup.Text>
-                  <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
-                    <option value="">Select Option</option>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                  </Form.Select>
-                </InputGroup>
-              </Form.Group>
-            </Col>
-          </Row>
-
+          <form onSubmit={handleSubmit}>
+            <Row >
+              <Col xs={12} md={6}>
+                <Form.Group id="serviceName" className="mb-4">
+                  <Form.Label>Service Name</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text>
+                      <FontAwesomeIcon icon={faQuran} />
+                    </InputGroup.Text>
+                    <Form.Control autoFocus required type="text" placeholder="Service Name" value={serviceName} onChange={(e) => setServiceName(e.target.value)} />
+                  </InputGroup>
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={6}>
+                <Form.Group id="serviceDescription" className="mb-4">
+                  <Form.Label>Service Description</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text>
+                      <FontAwesomeIcon icon={faQuran} />
+                    </InputGroup.Text>
+                    <Form.Control autoFocus required type="text" placeholder="Service Description" value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} />
+                  </InputGroup>
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={6}>
+                <Form.Group id="serviceImage" className="mb-4">
+                  <Form.Label>Service Image</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text>
+                      <FontAwesomeIcon icon={faQuran} />
+                    </InputGroup.Text>
+                    <Form.Control
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImagesUpload}
+                      placeholder="Upload Image"
+                    />
+                  </InputGroup>
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={6}>
+                <Form.Group id="isActive" className="mb-4">
+                  <Form.Label>Is Active</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text>
+                      <FontAwesomeIcon icon={faQuran} />
+                    </InputGroup.Text>
+                    <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
+                      <option value="">Select Option</option>
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </Form.Select>
+                  </InputGroup>
+                </Form.Group>
+              </Col>
+              <Col className="d-flex justify-content-center"> {/* Centering the submit button */}
+                <Button variant="primary" type="submit" className="w-100 mt-3">
+                  Submit
+                </Button>
+              </Col>
+            </Row>
+          </form>
         </Container>
       </section>
       <Col xs={12} lg={8} className="mx-auto">

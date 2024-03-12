@@ -101,9 +101,83 @@ export default () => {
                   <h3 className="mb-0">Motivation</h3>
                 </div>
                 <Form className="mt-4" onSubmit={handleSubmit}>
-                  <Row>
-                    {/* Form fields */}
-                  </Row>
+                <Row>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceName" className="mb-4">
+                <Form.Label>Attribbute</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Attribbute" value={attribbute} onChange={(e) => setAttribbute(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceDescription" className="mb-4">
+                <Form.Label>Heading</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Heading" value={heading} onChange={(e) => setHeading(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceImage" className="mb-4">
+                <Form.Label>Image</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="file"
+                    accept="images/*"
+                    onChange={handleImageUpload}
+                    placeholder="Upload Image"
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceDescription" className="mb-4">
+                <Form.Label>Bullet</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet} onChange={(e) => setBullet(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceDescription" className="mb-4">
+                <Form.Label>Content</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="isActive" className="mb-4">
+                <Form.Label>Is Active</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
+                    <option value="">Select Option</option>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                  </Form.Select>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
                   <Button variant="primary" type="submit" className="w-100 mt-3">
                     Submit
                   </Button>
