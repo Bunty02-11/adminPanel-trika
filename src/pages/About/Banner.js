@@ -19,12 +19,12 @@ export default () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const pageData = new FormData();
-    pageData.append('name', name);
+    // pageData.append('name', name);
     pageData.append('file', carouselImages);
-    pageData.append('isActive', isActive);
+    // pageData.append('isActive', isActive);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/addimage', pageData, {});
+      const response = await axios.post('http://localhost:8000/api/uploadBanner', pageData, {});
       console.log(response); // Logging the response for debugging purposes
     } catch (error) {
       console.error('Error:', error); // Log any errors
@@ -48,10 +48,10 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/getimage')
+    axios.get('http://localhost:8000/api/banner')
       .then(response => {
-        console.log(response.data);
-        setData(response.data);
+        console.log(response.data.banner);
+        setData(response.data.banner);
       })
       .catch(error => {
         console.log(error);
@@ -84,8 +84,8 @@ export default () => {
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
             <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item active>Carousel</Breadcrumb.Item>
+            <Breadcrumb.Item>About</Breadcrumb.Item>
+            <Breadcrumb.Item active>Banner</Breadcrumb.Item>
           </Breadcrumb>
         </div>
       </div>
@@ -95,18 +95,10 @@ export default () => {
             <Col xs={12} lg={6} className="mb-4 mb-lg-0">
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                 <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0">Carousel</h3>
+                  <h3 className="mb-0">About Banner Image</h3>
                 </div>
                 <Form className="mt-4" onSubmit={handleSubmit}>
-                  <Form.Group id="name" className="mb-4">
-                    <Form.Label>Name</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
-                      </InputGroup.Text>
-                      <Form.Control autoFocus required type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
-                    </InputGroup>
-                  </Form.Group>
+                  
                   <Form.Group id="image" className="mb-4">
                     <Form.Label>Carousel Image</Form.Label>
                     <InputGroup>
@@ -121,19 +113,7 @@ export default () => {
                       />
                     </InputGroup>
                   </Form.Group>
-                  <Form.Group id="isActive" className="mb-4">
-                    <Form.Label>Is Active</Form.Label>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
-                      </InputGroup.Text>
-                      <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
-                        <option value="">Select Option</option>
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                      </Form.Select>
-                    </InputGroup>
-                  </Form.Group>
+                 
                   <Button variant="primary" type="submit" className="w-100">
                     Submit
                   </Button>
@@ -145,7 +125,7 @@ export default () => {
                 <Card.Header>
                   <Row className="align-items-center">
                     <Col>
-                      <h5>Home Banner Carousel</h5>
+                      <h5>About Banner</h5>
                     </Col>
                   </Row>
                 </Card.Header>
@@ -153,9 +133,9 @@ export default () => {
                   <thead className="thead-light">
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">CarouselImages</th>
-                      <th scope="col">Active</th>
+                      {/* <th scope="col">Name</th> */}
+                      <th scope="col">About Banner Image</th>
+                      {/* <th scope="col">Active</th> */}
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
@@ -163,18 +143,18 @@ export default () => {
                     {data.slice(startIndex, endIndex).map((row, index) => (
                       <tr key={index}>
                         <td>{startIndex + index + 1}</td>
-                        <td>{row.name}</td>
+                        {/* <td>{row.name}</td> */}
                         <td>
-                          {row.carouselImages && (
+                          {row.imageUrl && (
                             <img 
-                              src={row.carouselImages} 
+                              src={row.imageUrl} 
                               alt="Carousel Image" 
                               style={{ maxWidth: "100px", cursor: "pointer" }} // Add cursor pointer
-                              onClick={() => handleImageClick(row.carouselImages)} // Attach onClick handler
+                              onClick={() => handleImageClick(row.imageUrl)} // Attach onClick handler
                             />
                           )}
                         </td>
-                        <td>{row.isActive ? "True" : "False"}</td>
+                         {/* <td>{row.isActive ? "True" : "False"}</td> */}
                         <td>
                           <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
                             <FontAwesomeIcon icon={faTrash} />

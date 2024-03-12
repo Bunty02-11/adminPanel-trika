@@ -6,9 +6,9 @@ import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
 
 export default () => {
-  const [name, setName] = useState('');
-  const [carouselImages, setCarouselImages] = useState(null);
-  const [isActive, setIsActive] = useState('false');
+  const [image, setImage] = useState('');
+  const [heading, setHeading] = useState(null);
+  const [description, setDescription] = useState('false');
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [clickedImage, setClickedImage] = useState(null); // State to track the clicked image
@@ -19,12 +19,12 @@ export default () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const pageData = new FormData();
-    pageData.append('name', name);
-    pageData.append('file', carouselImages);
-    pageData.append('isActive', isActive);
+    pageData.append('heading', heading);
+    pageData.append('file', image);
+    pageData.append('description', description);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/addimage', pageData, {});
+      const response = await axios.post('http://localhost:8000/api/upload/about', pageData, {});
       console.log(response); // Logging the response for debugging purposes
     } catch (error) {
       console.error('Error:', error); // Log any errors
@@ -99,16 +99,16 @@ export default () => {
                 </div>
                 <Form className="mt-4" onSubmit={handleSubmit}>
                   <Form.Group id="name" className="mb-4">
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Heading</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faQuran} />
                       </InputGroup.Text>
-                      <Form.Control autoFocus required type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
+                      <Form.Control autoFocus required type="text" placeholder="Your Name" value={heading} onChange={(e) => setHeading(e.target.value)} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group id="image" className="mb-4">
-                    <Form.Label>Carousel Image</Form.Label>
+                    <Form.Label>Image</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faQuran} />
