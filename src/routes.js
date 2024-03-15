@@ -14,6 +14,7 @@ export const Routes = {
     Aboutus: {path: "/about/aboutus"},
     Testimonial: {path: "/about/testimonial"},
     Contact: {path: "/contact/contact"},
+    Uploadblog: {path: "/blog/uploadblog"},
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
     Signin: { path: "/examples/sign-in" },

@@ -127,15 +127,8 @@ export default (props = {}) => {
 
               {/* <Dropdown.Divider className="my-3 border-indigo" /> */}
 
-              <CollapsableNavItem eventKey="documentation/" title="Blog" icon={faBook}>
-                <NavItem title="Overview" link={Routes.DocsOverview.path} />
-                <NavItem title="Download" link={Routes.DocsDownload.path} />
-                <NavItem title="Quick Start" link={Routes.DocsQuickStart.path} />
-                <NavItem title="License" link={Routes.DocsLicense.path} />
-                <NavItem title="Folder Structure" link={Routes.DocsFolderStructure.path} />
-                <NavItem title="Build Tools" link={Routes.DocsBuild.path} />
-                <NavItem title="Changelog" link={Routes.DocsChangelog.path} />
-              </CollapsableNavItem>
+              <NavItem title="Blog" link={Routes.Uploadblog.path} icon={faDesktop} />
+
               <CollapsableNavItem eventKey="components/" title="Service" icon={faPhoenixFramework}>
                 <NavItem title="Our Service" link={Routes.Accordions.path} />
                 <NavItem title="Benifits" link={Routes.Alerts.path} />

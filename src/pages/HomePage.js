@@ -56,6 +56,7 @@ import Banner from './About/Banner';
 import Aboutus from './About/Aboutus';
 import Testimonial from './About/Testimonial';
 import Contact from './Contact/Contact';
+import Uploadblog from './Blog/Uploadblog';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -130,6 +131,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Aboutus.path} component={Aboutus} />
     <RouteWithSidebar exact path={Routes.Testimonial.path} component={Testimonial} />
     <RouteWithSidebar exact path={Routes.Contact.path} component={Contact} />
+    <RouteWithSidebar exact path={Routes.Uploadblog.path} component={Uploadblog} />
 
     
     
