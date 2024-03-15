@@ -13,6 +13,7 @@ export const Routes = {
     Banner: {path: "/about/banner"},
     Aboutus: {path: "/about/aboutus"},
     Testimonial: {path: "/about/testimonial"},
+    Contact: {path: "/contact/contact"},
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
     Signin: { path: "/examples/sign-in" },

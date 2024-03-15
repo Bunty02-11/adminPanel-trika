@@ -4,7 +4,7 @@ import SimpleBar from 'simplebar-react';
 import { useLocation } from "react-router-dom";
 import { CSSTransition } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faBoxOpen, faChartPie, faCog, faFileAlt, faHandHoldingUsd, faSignOutAlt, faTable, faTimes, faCalendarAlt, faMapPin, faInbox, faRocket, faDesktop, faSignInAlt, faSign, faSignLanguage } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faBoxOpen, faChartPie, faCog, faFileAlt, faHandHoldingUsd, faSignOutAlt, faTable, faTimes, faCalendarAlt, faMapPin, faInbox, faRocket, faDesktop, faSignInAlt, faSign, faSignLanguage, faSortNumericDownAlt, faHome, faInfo, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Badge, Image, Button, Dropdown, Accordion, Navbar } from '@themesberg/react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ import { Routes } from "../routes";
 import ThemesbergLogo from "../assets/img/themesberg.svg";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../assets/img/team/profile-picture-3.jpg";
+import { faPhoenixFramework } from "@fortawesome/free-brands-svg-icons";
 
 export default (props = {}) => {
   const location = useLocation();
@@ -108,13 +109,13 @@ export default (props = {}) => {
               <NavItem external title="Calendar" link="https://demo.themesberg.com/volt-pro-react/#/calendar" target="_blank" badgeText="Pro" icon={faCalendarAlt} />
               <NavItem external title="Map" link="https://demo.themesberg.com/volt-pro-react/#/map" target="_blank" badgeText="Pro" icon={faMapPin} /> */}
 
-              <CollapsableNavItem eventKey="Home/" title="Home" icon={faTable}>
+              <CollapsableNavItem eventKey="Home/" title="Home" icon={faHome}>
                 <NavItem title=" Carousel" link={Routes.Carousel.path} />
                 <NavItem title=" Motivation" link={Routes.Motivation.path} />
                 <NavItem title=" Service" link={Routes.Service.path} />
               </CollapsableNavItem>
 
-              <CollapsableNavItem eventKey="examples/" title="About" icon={faFileAlt}>
+              <CollapsableNavItem eventKey="examples/" title="About" icon={faInfo}>
                 
                 
                 <NavItem title="Banner" link={Routes.Banner.path} />
@@ -135,7 +136,7 @@ export default (props = {}) => {
                 <NavItem title="Build Tools" link={Routes.DocsBuild.path} />
                 <NavItem title="Changelog" link={Routes.DocsChangelog.path} />
               </CollapsableNavItem>
-              <CollapsableNavItem eventKey="components/" title="Service" icon={faBoxOpen}>
+              <CollapsableNavItem eventKey="components/" title="Service" icon={faPhoenixFramework}>
                 <NavItem title="Our Service" link={Routes.Accordions.path} />
                 <NavItem title="Benifits" link={Routes.Alerts.path} />
                 <NavItem title="Badges" link={Routes.Badges.path} />
@@ -154,6 +155,7 @@ export default (props = {}) => {
                 <NavItem title="Toasts" link={Routes.Toasts.path} />
                 <NavItem title="Tooltips" link={Routes.Tooltips.path} />
               </CollapsableNavItem>
+              <NavItem title="Contact" link={Routes.Contact.path} icon={faPhone} />
               {/* <NavItem external title="Themesberg" link="https://themesberg.com" target="_blank" image={ThemesbergLogo} /> */}
               <Button as={Link} to={Routes.Signin.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faSignOutAlt} className="me-1" />Logout</Button>
             </Nav>

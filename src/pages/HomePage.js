@@ -55,6 +55,7 @@ import Toasts from "./components/Toasts";
 import Banner from './About/Banner';
 import Aboutus from './About/Aboutus';
 import Testimonial from './About/Testimonial';
+import Contact from './Contact/Contact';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -128,6 +129,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Banner.path} component={Banner} />
     <RouteWithSidebar exact path={Routes.Aboutus.path} component={Aboutus} />
     <RouteWithSidebar exact path={Routes.Testimonial.path} component={Testimonial} />
+    <RouteWithSidebar exact path={Routes.Contact.path} component={Contact} />
 
     
     

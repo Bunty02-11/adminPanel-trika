@@ -1,49 +1,49 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faTimes } from "@fortawesome/free-solid-svg-icons"; // Added faTimes for modal close icon
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
 
 export default () => {
-  const [name, setName] = useState('');
-  const [carouselImages, setCarouselImages] = useState(null);
-  const [isActive, setIsActive] = useState('false');
+  const [imageUrl, setImageUrl] = useState('');
+  const [heading, setHeading] = useState('');
+  const [description, setDescription] = useState('');
+  const [isActive, setIsActive] = useState('');
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [clickedImage, setClickedImage] = useState(null); // State to track the clicked image
-  const [showModal, setShowModal] = useState(false); // State to control the modal visibility
+  const [clickedImage, setClickedImage] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const itemsPerPage = 3;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const pageData = new FormData();
-    // pageData.append('name', name);
-    pageData.append('file', carouselImages);
-    // pageData.append('isActive', isActive);
+    pageData.append('heading', heading);
+    pageData.append('file', imageUrl);
+    pageData.append('description', description);
 
     try {
       const response = await axios.post('http://localhost:8000/api/uploadBanner', pageData, {});
-      console.log(response); // Logging the response for debugging purposes
+      console.log(response);
     } catch (error) {
-      console.error('Error:', error); // Log any errors
+      console.error('Error:', error);
     }
   }
 
   const handleImageUpload = (event) => {
-    const image = event.target.files[0];
-    setCarouselImages(image);
+    const imageUrl = event.target.files[0];
+    setImageUrl(imageUrl);
   }
 
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
-      console.log(response); // Logging the response for debugging purposes
-      // After successful deletion, update the data state to reflect the changes
+      console.log(response);
       setData(data.filter(item => item.id !== id));
     } catch (error) {
-      console.error('Error:', error); // Log any errors
+      console.error('Error:', error);
     }
   }
 
@@ -62,17 +62,14 @@ export default () => {
     setCurrentPage(newPage);
   }
 
-  // Calculate the start and end indices for the current page
   const startIndex = currentPage * itemsPerPage;
   const endIndex = (currentPage + 1) * itemsPerPage;
 
-  // Function to handle image click
   const handleImageClick = (image) => {
     setClickedImage(image);
     setShowModal(true);
   }
 
-  // Function to close the modal
   const handleCloseModal = () => {
     setShowModal(false);
     setClickedImage(null);
@@ -84,8 +81,8 @@ export default () => {
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
             <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
-            <Breadcrumb.Item>About</Breadcrumb.Item>
-            <Breadcrumb.Item active>Banner</Breadcrumb.Item>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item active>Carousel</Breadcrumb.Item>
           </Breadcrumb>
         </div>
       </div>
@@ -95,12 +92,11 @@ export default () => {
             <Col xs={12} lg={6} className="mb-4 mb-lg-0">
               <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                 <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0">About Banner Image</h3>
+                  <h3 className="mb-0">Banner</h3>
                 </div>
                 <Form className="mt-4" onSubmit={handleSubmit}>
-                  
                   <Form.Group id="image" className="mb-4">
-                    <Form.Label>Carousel Image</Form.Label>
+                    <Form.Label>Image</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faQuran} />
@@ -113,7 +109,6 @@ export default () => {
                       />
                     </InputGroup>
                   </Form.Group>
-                 
                   <Button variant="primary" type="submit" className="w-100">
                     Submit
                   </Button>
@@ -125,7 +120,7 @@ export default () => {
                 <Card.Header>
                   <Row className="align-items-center">
                     <Col>
-                      <h5>About Banner</h5>
+                      <h5>Banner</h5>
                     </Col>
                   </Row>
                 </Card.Header>
@@ -133,52 +128,51 @@ export default () => {
                   <thead className="thead-light">
                     <tr>
                       <th scope="col">#</th>
-                      {/* <th scope="col">Name</th> */}
-                      <th scope="col">About Banner Image</th>
-                      {/* <th scope="col">Active</th> */}
+                      <th scope="col">Images</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {data.slice(startIndex, endIndex).map((row, index) => (
+                    {(Array.isArray(data) && data.length > 0) ? data.slice(startIndex, endIndex).map((row, index) => (
                       <tr key={index}>
                         <td>{startIndex + index + 1}</td>
-                        {/* <td>{row.name}</td> */}
                         <td>
                           {row.imageUrl && (
-                            <img 
-                              src={row.imageUrl} 
-                              alt="Carousel Image" 
-                              style={{ maxWidth: "100px", cursor: "pointer" }} // Add cursor pointer
-                              onClick={() => handleImageClick(row.imageUrl)} // Attach onClick handler
+                            <img
+                              src={row.imageUrl}
+                              alt="Carousel Image"
+                              style={{ maxWidth: "100px", cursor: "pointer" }}
+                              onClick={() => handleImageClick(row.imageUrl)}
                             />
                           )}
                         </td>
-                         {/* <td>{row.isActive ? "True" : "False"}</td> */}
                         <td>
                           <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </td>
                       </tr>
-                    ))}
+                    )) : (
+                      <tr>
+                        <td colSpan="5">No data available</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
-                {/* Pagination */}
                 <div className="d-flex justify-content-center mt-3">
                   <Button
                     variant="light"
                     disabled={currentPage === 0}
                     onClick={() => handlePageChange(currentPage - 1)}
-                    className="me-2" // Add margin to the right of the button
+                    className="me-2"
                   >
                     <FontAwesomeIcon icon={faAngleLeft} />
                   </Button>
                   <Button
                     variant="light"
-                    disabled={(currentPage + 1) * itemsPerPage >= data.length}
+                    disabled={(currentPage + 1) * itemsPerPage >= (Array.isArray(data) ? data.length : 0)}
                     onClick={() => handlePageChange(currentPage + 1)}
-                    className="ms-2" // Add margin to the left of the button
+                    className="ms-2"
                   >
                     <FontAwesomeIcon icon={faAngleRight} />
                   </Button>
@@ -188,10 +182,9 @@ export default () => {
           </Row>
         </Container>
       </section>
-      {/* Modal for Image Zoom */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{data.name}</Modal.Title>
+          <Modal.Title>Zoomed Image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
