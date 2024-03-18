@@ -194,7 +194,7 @@ export default () => {
                                 <Card.Header>
                                     <Row className="align-items-center">
                                         <Col>
-                                            <h5>Motivation Banner</h5>
+                                            <h5>Blog Banner</h5>
                                         </Col>
                                     </Row>
                                 </Card.Header>

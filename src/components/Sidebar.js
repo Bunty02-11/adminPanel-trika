@@ -129,24 +129,8 @@ export default (props = {}) => {
 
               <NavItem title="Blog" link={Routes.Uploadblog.path} icon={faDesktop} />
 
-              <CollapsableNavItem eventKey="components/" title="Service" icon={faPhoenixFramework}>
-                <NavItem title="Our Service" link={Routes.Accordions.path} />
-                <NavItem title="Benifits" link={Routes.Alerts.path} />
-                <NavItem title="Badges" link={Routes.Badges.path} />
-                {/* <NavItem external title="Widgets" link="https://demo.themesberg.com/volt-pro-react/#/components/widgets" target="_blank" badgeText="Pro" /> */}
-                <NavItem title="Breadcrumbs" link={Routes.Breadcrumbs.path} />
-                <NavItem title="Buttons" link={Routes.Buttons.path} />
-                <NavItem title="Forms" link={Routes.Forms.path} />
-                <NavItem title="Modals" link={Routes.Modals.path} />
-                <NavItem title="Navbars" link={Routes.Navbars.path} />
-                <NavItem title="Navs" link={Routes.Navs.path} />
-                <NavItem title="Pagination" link={Routes.Pagination.path} />
-                <NavItem title="Popovers" link={Routes.Popovers.path} />
-                <NavItem title="Progress" link={Routes.Progress.path} />
-                <NavItem title="Tables" link={Routes.Tables.path} />
-                <NavItem title="Tabs" link={Routes.Tabs.path} />
-                <NavItem title="Toasts" link={Routes.Toasts.path} />
-                <NavItem title="Tooltips" link={Routes.Tooltips.path} />
+              <CollapsableNavItem eventKey="examples/" title="Service" icon={faPhoenixFramework}>
+                <NavItem title="Our Service" link={Routes.Services.path} />
               </CollapsableNavItem>
               <NavItem title="Contact" link={Routes.Contact.path} icon={faPhone} />
               {/* <NavItem external title="Themesberg" link="https://themesberg.com" target="_blank" image={ThemesbergLogo} /> */}

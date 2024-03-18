@@ -10,7 +10,9 @@ export default () => {
   const [heading, setHeading] = useState('');
   const [data, setData] = useState([]);
   const [content, setContent] = useState('');
-  const [bullet, setBullet] = useState('');
+  const [bullet_one, setBullet_one] = useState('');
+  const [bullet_two, setBullet_two] = useState('');
+  const [bullet_three, setBullet_three] = useState('');
   const [isActive, setIsActive] = useState('false');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(4); // Changed to 4 items per page
@@ -25,7 +27,9 @@ export default () => {
     pageData.append('file', image);
     pageData.append('Heading', heading);
     pageData.append('content', content);
-    pageData.append('bullet', bullet);
+    pageData.append('bullet_one', bullet_one);
+    pageData.append('bullet_two', bullet_two);
+    pageData.append('bullet_three', bullet_three);
     pageData.append('isActive', isActive);
     
     try {
@@ -147,7 +151,29 @@ export default () => {
                   <InputGroup.Text>
                     <FontAwesomeIcon icon={faQuran} />
                   </InputGroup.Text>
-                  <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet} onChange={(e) => setBullet(e.target.value)} />
+                  <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_one} onChange={(e) => setBullet_one(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceDescription" className="mb-4">
+                <Form.Label>Bullet</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_two} onChange={(e) => setBullet_two(e.target.value)} />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={6}>
+              <Form.Group id="serviceDescription" className="mb-4">
+                <Form.Label>Bullet</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faQuran} />
+                  </InputGroup.Text>
+                  <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_three} onChange={(e) => setBullet_three(e.target.value)} />
                 </InputGroup>
               </Form.Group>
             </Col>
@@ -207,7 +233,9 @@ export default () => {
                       <th scope="col">Image</th>
                       <th scope="col">Heading</th>
                       <th scope="col">Content</th>
-                      <th scope="col">Bullet</th>
+                      <th scope="col">bullet_one</th>
+                      <th scope="col">bullet_two</th>
+                      <th scope="col">bullet_three</th>
                       <th scope="col">isActive</th>
                       <th scope="col">Actions</th>
                     </tr>
@@ -229,7 +257,9 @@ export default () => {
                         </td>
                         <td>{row.Heading}</td>
                         <td>{row.content}</td>
-                        <td>{row.bullet}</td>
+                        <td>{row.bullet_one}</td>
+                        <td>{row.bullet_two}</td>
+                        <td>{row.bullet_three}</td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
                           <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
