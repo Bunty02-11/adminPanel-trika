@@ -106,7 +106,7 @@ export default () => {
                     <Form.Label>Description</Form.Label>
                     <InputGroup>
                       <InputGroup.Text><FontAwesomeIcon icon={faQuran} /></InputGroup.Text>
-                      <Form.Control autoFocus required type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                      <Form.Control as="textarea" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group id="image" className="mb-4">
