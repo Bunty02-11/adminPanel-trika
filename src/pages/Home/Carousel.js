@@ -102,7 +102,6 @@ export default () => {
                     <Form.Label>Name</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
                       </InputGroup.Text>
                       <Form.Control autoFocus required type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} />
                     </InputGroup>
@@ -111,7 +110,6 @@ export default () => {
                     <Form.Label>Carousel Image</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
                       </InputGroup.Text>
                       <Form.Control
                         type="file"
@@ -125,7 +123,6 @@ export default () => {
                     <Form.Label>Is Active</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
                       </InputGroup.Text>
                       <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
                         <option value="">Select Option</option>

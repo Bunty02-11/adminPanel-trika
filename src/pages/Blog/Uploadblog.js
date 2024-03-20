@@ -97,7 +97,7 @@ export default () => {
                         <Col xs={12} lg={12} className="mb-4 mb-lg-0">
                             <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100">
                                 <div className="text-center text-md-center mb-4 mt-md-0">
-                                    <h3 className="mb-0">Motivation</h3>
+                                    <h3 className="mb-0">Blog</h3>
                                 </div>
                                 <Form className="mt-4" onSubmit={handleSubmit}>
                                     <Row>
@@ -106,7 +106,6 @@ export default () => {
                                                 <Form.Label>heading</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
-                                                        <FontAwesomeIcon icon={faQuran} />
                                                     </InputGroup.Text>
                                                     <Form.Control autoFocus required type="text" placeholder="heading" value={heading} onChange={(e) => setHeading(e.target.value)} />
                                                 </InputGroup>
@@ -117,7 +116,6 @@ export default () => {
                                                 <Form.Label>Date</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
-                                                        <FontAwesomeIcon icon={faQuran} />
                                                     </InputGroup.Text>
                                                     <Form.Control autoFocus required type="text" placeholder="date" value={date} onChange={(e) => setDate(e.target.value)} />
                                                 </InputGroup>
@@ -128,7 +126,6 @@ export default () => {
                                                 <Form.Label>Image</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
-                                                        <FontAwesomeIcon icon={faQuran} />
                                                     </InputGroup.Text>
                                                     <Form.Control
                                                         type="file"
@@ -144,9 +141,8 @@ export default () => {
                                                 <Form.Label>Description</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
-                                                        <FontAwesomeIcon icon={faQuran} />
                                                     </InputGroup.Text>
-                                                    <Form.Control autoFocus required type="text" placeholder="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                                                    <Form.Control as="textarea" placeholder="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                                                 </InputGroup>
                                             </Form.Group>
                                         </Col>
@@ -155,7 +151,6 @@ export default () => {
                                                 <Form.Label>tagline</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
-                                                        <FontAwesomeIcon icon={faQuran} />
                                                     </InputGroup.Text>
                                                     <Form.Control autoFocus required type="text" placeholder="Tagline" value={tagline} onChange={(e) => setTagline(e.target.value)} />
                                                 </InputGroup>
@@ -166,7 +161,6 @@ export default () => {
                                                 <Form.Label>Is Active</Form.Label>
                                                 <InputGroup>
                                                     <InputGroup.Text>
-                                                        <FontAwesomeIcon icon={faQuran} />
                                                     </InputGroup.Text>
                                                     <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
                                                         <option value="">Select Option</option>

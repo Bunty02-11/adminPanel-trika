@@ -98,12 +98,12 @@ export default () => {
               </div>
               <Form className="mt-4" onSubmit={handleSubmit}>
                 <Row>
-                  <Col xs={12} className="mb-4">
+                  <Col  className="mb-4">
                     <Form.Group id="serviceName">
                       <Form.Label>Name</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                          <FontAwesomeIcon icon={faQuran} />
+                         
                         </InputGroup.Text>
                         <Form.Control autoFocus required type="text" placeholder="Attribute" value={name} onChange={(e) => setName(e.target.value)} />
                       </InputGroup>
@@ -114,7 +114,7 @@ export default () => {
                       <Form.Label>Message</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                          <FontAwesomeIcon icon={faQuran} />
+                         
                         </InputGroup.Text>
                         <Form.Control autoFocus required type="text" placeholder="Heading" value={message} onChange={(e) => setMessage(e.target.value)} />
                       </InputGroup>
@@ -125,7 +125,7 @@ export default () => {
                       <Form.Label>Image</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                          <FontAwesomeIcon icon={faQuran} />
+                         
                         </InputGroup.Text>
                         <Form.Control
                           type="file"
@@ -136,12 +136,12 @@ export default () => {
                       </InputGroup>
                     </Form.Group>
                   </Col>
-                  <Col xs={12} md={6} className="mb-4">
+                  <Col xs={12}  className="mb-4">
                     <Form.Group id="rating">
                       <Form.Label>Rating</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                          <FontAwesomeIcon icon={faQuran} />
+                         
                         </InputGroup.Text>
                         <Form.Select required value={rating} onChange={(e) => setRating(e.target.value)}>
                           <option value="">Select Option</option>
@@ -154,12 +154,12 @@ export default () => {
                       </InputGroup>
                     </Form.Group>
                   </Col>
-                  <Col xs={12} md={6} className="mb-4">
+                  <Col xs={12}  className="mb-4">
                     <Form.Group id="isActive">
                       <Form.Label>Is Active</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                          <FontAwesomeIcon icon={faQuran} />
+                         
                         </InputGroup.Text>
                         <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
                           <option value="">Select Option</option>

@@ -6,13 +6,13 @@ import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
 
 export default () => {
-  const [image, setImage] = useState(null);
+  const [mediaFile, setMediaFile] = useState(null);
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(false);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [clickedImage, setClickedImage] = useState(null);
+  const [clickedMedia, setClickedMedia] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const itemsPerPage = 3;
@@ -21,7 +21,7 @@ export default () => {
     event.preventDefault();
     const pageData = new FormData();
     pageData.append('heading', heading);
-    pageData.append('file', image);
+    pageData.append('file', mediaFile);
     pageData.append('description', description);
 
     try {
@@ -32,14 +32,14 @@ export default () => {
     }
   }
 
-  const handleImageUpload = (event) => {
-    const image = event.target.files[0];
-    setImage(image);
+  const handleMediaUpload = (event) => {
+    const file = event.target.files[0];
+    setMediaFile(file);
   }
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
+      const response = await axios.delete(`http://localhost:8000/api/deleteMedia/${id}`);
       console.log(response);
       setData(data.filter(item => item.id !== id));
     } catch (error) {
@@ -65,14 +65,14 @@ export default () => {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = (currentPage + 1) * itemsPerPage;
 
-  const handleImageClick = (image) => {
-    setClickedImage(image);
+  const handleMediaClick = (media) => {
+    setClickedMedia(media);
     setShowModal(true);
   }
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setClickedImage(null);
+    setClickedMedia(null);
   }
 
   return (
@@ -98,28 +98,28 @@ export default () => {
                   <Form.Group id="heading" className="mb-4">
                     <Form.Label>Heading</Form.Label>
                     <InputGroup>
-                      <InputGroup.Text><FontAwesomeIcon icon={faQuran} /></InputGroup.Text>
+                      <InputGroup.Text></InputGroup.Text>
                       <Form.Control autoFocus required type="text" placeholder="Heading" value={heading} onChange={(e) => setHeading(e.target.value)} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group id="description" className="mb-4">
                     <Form.Label>Description</Form.Label>
                     <InputGroup>
-                      <InputGroup.Text><FontAwesomeIcon icon={faQuran} /></InputGroup.Text>
+                      <InputGroup.Text></InputGroup.Text>
                       <Form.Control as="textarea" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </InputGroup>
                   </Form.Group>
-                  <Form.Group id="image" className="mb-4">
-                    <Form.Label>Image</Form.Label>
+                  <Form.Group id="media" className="mb-4">
+                    <Form.Label>Media (Image/Video)</Form.Label>
                     <InputGroup>
-                      <InputGroup.Text><FontAwesomeIcon icon={faQuran} /></InputGroup.Text>
-                      <Form.Control type="file" accept="image/*" onChange={handleImageUpload} />
+                      <InputGroup.Text></InputGroup.Text>
+                      <Form.Control type="file" accept="image/*, video/*" onChange={handleMediaUpload} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group id="isActive" className="mb-4">
                     <Form.Label>Is Active</Form.Label>
                     <InputGroup>
-                      <InputGroup.Text><FontAwesomeIcon icon={faQuran} /></InputGroup.Text>
+                      <InputGroup.Text></InputGroup.Text>
                       <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
                         <option value="">Select Option</option>
                         <option value={true}>True</option>
@@ -142,7 +142,7 @@ export default () => {
                       <th scope="col">#</th>
                       <th scope="col">Heading</th>
                       <th scope="col">Description</th>
-                      <th scope="col">Image</th>
+                      <th scope="col">Media</th>
                       <th scope="col">Active</th>
                       <th scope="col">Actions</th>
                     </tr>
@@ -155,12 +155,20 @@ export default () => {
                         <td>{row.description}</td>
                         <td>
                           {row.image && (
-                            <img src={row.image} alt="Carousel Image" style={{ maxWidth: "100px", cursor: "pointer" }} onClick={() => handleImageClick(row.image)} />
+                            <div>
+                              {row.image.startsWith('http') ? (
+                                <img src={row.image} alt="Media" style={{ maxWidth: "100px", cursor: "pointer" }} onClick={() => handleMediaClick(row.image)} />
+                              ) : (
+                                <video controls style={{ maxWidth: "100%" }} onClick={() => handleMediaClick(row.image)}>
+                                  <source src={row.image} type="video/mp4" />
+                                </video>
+                              )}
+                            </div>
                           )}
                         </td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                        <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </td>
@@ -179,10 +187,16 @@ export default () => {
       </section>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Image Zoom</Modal.Title>
+          <Modal.Title>Media Zoom</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
+          {clickedMedia && (clickedMedia.startsWith('http') ? (
+            <img src={clickedMedia} alt="Zoomed Media" style={{ maxWidth: "100%" }} />
+          ) : (
+            <video controls style={{ maxWidth: "100%" }}>
+              <source src={clickedMedia} type="video/mp4" />
+            </video>
+          ))}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>Close</Button>

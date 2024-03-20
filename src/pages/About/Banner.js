@@ -99,7 +99,6 @@ export default () => {
                     <Form.Label>Image</Form.Label>
                     <InputGroup>
                       <InputGroup.Text>
-                        <FontAwesomeIcon icon={faQuran} />
                       </InputGroup.Text>
                       <Form.Control
                         type="file"
