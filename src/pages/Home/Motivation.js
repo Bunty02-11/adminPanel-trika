@@ -3,6 +3,8 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal } from '@themesberg/react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   const [attribbute, setAttribbute] = useState('');
@@ -21,7 +23,7 @@ export default () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     const pageData = new FormData();
     pageData.append('Attribbute', attribbute);
     pageData.append('file', image);
@@ -31,14 +33,30 @@ export default () => {
     pageData.append('bullet_two', bullet_two);
     pageData.append('bullet_three', bullet_three);
     pageData.append('isActive', isActive);
-
+  
     try {
-      const response = await axios.post('http://localhost:8000/api/create/motivation', pageData, {});
+      const response = await axios.post('http://13.126.67.232:8000/api/create/motivation', pageData, {});
       console.log(response);
+      toast.success('Data added successfully'); // Call toast.success after successful addition
+  
+      // Reload page after successful submission
+      window.location.reload();
+  
+      // Clear form data after submission
+      setAttribbute('');
+      setImage(null);
+      setHeading('');
+      setContent('');
+      setBullet_one('');
+      setBullet_two('');
+      setBullet_three('');
+      setIsActive(false);
     } catch (error) {
       console.error('Error:', error);
+      toast.error('Failed to add data'); // Display error toast if addition fails
     }
   }
+  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -50,7 +68,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/get/motivations?page=${currentPage}&perPage=${itemsPerPage}`)
+    axios.get(`http://13.126.67.232:8000/api/get/motivations?page=${currentPage}&perPage=${itemsPerPage}`)
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -61,7 +79,7 @@ export default () => {
   }, [currentPage, itemsPerPage]);
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8000/api/delete/motivation/${id}`)
+    axios.delete(`http://13.126.67.232:8000/api/delete/motivation/${id}`)
       .then(response => {
         console.log('Record deleted successfully:', response.data);
         setData(prevData => prevData.filter(item => item.id !== id));
@@ -87,6 +105,7 @@ export default () => {
 
   return (
     <>
+    <ToastContainer/>
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>

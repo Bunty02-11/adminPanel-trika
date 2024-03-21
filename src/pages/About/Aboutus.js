@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   const [mediaFile, setMediaFile] = useState(null);
@@ -23,14 +25,24 @@ export default () => {
     pageData.append('heading', heading);
     pageData.append('file', mediaFile);
     pageData.append('description', description);
-
+  
     try {
-      const response = await axios.post('http://localhost:8000/api/createabout', pageData, {});
+      const response = await axios.post('http://13.126.67.232:8000/api/createabout', pageData, {});
       console.log(response);
+      toast.success('Data added successfully'); // Call toast.success after successful addition
+  
+      // Reload page after successful submission
+      window.location.reload();
+  
+      // Clear form data after submission
+      setHeading('');
+      setMediaFile(null);
+      setDescription('');
     } catch (error) {
       console.error('Error:', error);
+      toast.error('Failed to add data'); // Display error toast if addition fails
     }
-  }
+  }  
 
   const handleMediaUpload = (event) => {
     const file = event.target.files[0];
@@ -39,7 +51,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/deleteMedia/${id}`);
+      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteMedia/${id}`);
       console.log(response);
       setData(data.filter(item => item.id !== id));
     } catch (error) {
@@ -48,7 +60,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/get/about')
+    axios.get('http://13.126.67.232:8000/api/get/about')
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -77,6 +89,7 @@ export default () => {
 
   return (
     <>
+    <ToastContainer/>
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>

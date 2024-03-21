@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faTimes } from "@fortawesome/free-solid-svg-icons"; // Added faTimes for modal close icon
 import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default () => {
   const [name, setName] = useState('');
@@ -22,14 +25,26 @@ export default () => {
     pageData.append('name', name);
     pageData.append('file', carouselImages);
     pageData.append('isActive', isActive);
-
+  
     try {
-      const response = await axios.post('http://localhost:8000/api/addimage', pageData, {});
-      console.log(response); // Logging the response for debugging purposes
+      const response = await axios.post('http://13.126.67.232:8000/api/addimage', pageData, {});
+      console.log(response);
+      toast.success('Image added successfully'); // Call toast.success after successful addition
+  
+      // Reload page after successful submission
+      window.location.reload();
+  
+      // Clear form data after submission
+      setName('');
+      setCarouselImages(null);
+      setIsActive(false);
     } catch (error) {
-      console.error('Error:', error); // Log any errors
+      console.error('Error:', error);
+      toast.error('Failed to add image'); // Display error toast if addition fails
     }
   }
+  
+  
 
   const handleImageUpload = (event) => {
     const image = event.target.files[0];
@@ -38,7 +53,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
+      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteimage/${id}`);
       console.log(response); // Logging the response for debugging purposes
       // After successful deletion, update the data state to reflect the changes
       setData(data.filter(item => item.id !== id));
@@ -48,7 +63,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/getimage')
+    axios.get('http://13.126.67.232:8000/api/getimage')
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -80,6 +95,7 @@ export default () => {
 
   return (
     <>
+     <ToastContainer/>
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>

@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   const [imageUrl, setImageUrl] = useState('');
@@ -23,14 +25,25 @@ export default () => {
     pageData.append('heading', heading);
     pageData.append('file', imageUrl);
     pageData.append('description', description);
-
+  
     try {
-      const response = await axios.post('http://localhost:8000/api/uploadBanner', pageData, {});
+      const response = await axios.post('http://13.126.67.232:8000/api/uploadBanner', pageData, {});
       console.log(response);
+      toast.success('Image added successfully'); // Call toast.success after successful addition
+  
+      // Reload page after successful submission
+      window.location.reload();
+  
+      // Clear form data after submission
+      setHeading('');
+      setImageUrl(null);
+      setDescription('');
     } catch (error) {
       console.error('Error:', error);
+      toast.error('Failed to add image'); // Display error toast if addition fails
     }
   }
+  
 
   const handleImageUpload = (event) => {
     const imageUrl = event.target.files[0];
@@ -39,7 +52,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
+      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteimage/${id}`);
       console.log(response);
       setData(data.filter(item => item.id !== id));
     } catch (error) {
@@ -48,7 +61,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/banner')
+    axios.get('http://13.126.67.232:8000/api/banner')
       .then(response => {
         console.log(response.data.banner);
         setData(response.data.banner);
@@ -77,12 +90,13 @@ export default () => {
 
   return (
     <>
+    <ToastContainer/>
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
             <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item active>Carousel</Breadcrumb.Item>
+            <Breadcrumb.Item>About</Breadcrumb.Item>
+            <Breadcrumb.Item active>Banner</Breadcrumb.Item>
           </Breadcrumb>
         </div>
       </div>

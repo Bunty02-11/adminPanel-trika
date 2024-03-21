@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   const [name, setName] = useState('');
@@ -28,12 +30,25 @@ export default () => {
     pageData.append('isActive', isActive);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/uploadtestimonal', pageData, {});
+      const response = await axios.post('http://13.126.67.232:8000/api/uploadtestimonal', pageData, {});
       console.log(response);
+      toast.success('Image added successfully'); // Call toast.success after successful addition
+
+      // Reload page after successful submission
+      window.location.reload();
+
+      // Clear form data after submission
+      setName('');
+      setMessage('');
+      setRating('');
+      setImage(null);
+      setIsActive('false');
     } catch (error) {
       console.error('Error:', error);
+      toast.error('Failed to add image'); // Display error toast if addition fails
     }
   }
+
 
   const handleImageUpload = (event) => {
     const image = event.target.files[0];
@@ -42,7 +57,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
+      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteimage/${id}`);
       console.log(response);
       setData(data.filter(item => item._id !== id));
     } catch (error) {
@@ -51,7 +66,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/get/testimonal')
+    axios.get('http://13.126.67.232:8000/api/get/testimonal')
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -80,6 +95,7 @@ export default () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center ">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
@@ -98,14 +114,14 @@ export default () => {
               </div>
               <Form className="mt-4" onSubmit={handleSubmit}>
                 <Row>
-                  <Col  className="mb-4">
+                  <Col className="mb-4">
                     <Form.Group id="serviceName">
                       <Form.Label>Name</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                         
+
                         </InputGroup.Text>
-                        <Form.Control autoFocus required type="text" placeholder="Attribute" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Form.Control autoFocus required type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
                       </InputGroup>
                     </Form.Group>
                   </Col>
@@ -114,9 +130,9 @@ export default () => {
                       <Form.Label>Message</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                         
+
                         </InputGroup.Text>
-                        <Form.Control autoFocus required type="text" placeholder="Heading" value={message} onChange={(e) => setMessage(e.target.value)} />
+                        <Form.Control autoFocus required type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} />
                       </InputGroup>
                     </Form.Group>
                   </Col>
@@ -125,7 +141,7 @@ export default () => {
                       <Form.Label>Image</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                         
+
                         </InputGroup.Text>
                         <Form.Control
                           type="file"
@@ -136,12 +152,12 @@ export default () => {
                       </InputGroup>
                     </Form.Group>
                   </Col>
-                  <Col xs={12}  className="mb-4">
+                  <Col xs={12} className="mb-4">
                     <Form.Group id="rating">
                       <Form.Label>Rating</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                         
+
                         </InputGroup.Text>
                         <Form.Select required value={rating} onChange={(e) => setRating(e.target.value)}>
                           <option value="">Select Option</option>
@@ -154,12 +170,12 @@ export default () => {
                       </InputGroup>
                     </Form.Group>
                   </Col>
-                  <Col xs={12}  className="mb-4">
+                  <Col xs={12} className="mb-4">
                     <Form.Group id="isActive">
                       <Form.Label>Is Active</Form.Label>
                       <InputGroup>
                         <InputGroup.Text>
-                         
+
                         </InputGroup.Text>
                         <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
                           <option value="">Select Option</option>

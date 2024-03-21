@@ -3,9 +3,8 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Card, Button, Table, Container, InputGroup, Modal } from '@themesberg/react-bootstrap';
-import { Link } from 'react-router-dom';
-
-import { Routes } from "../../routes";
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default () => {
   const [serviceName, setServiceName] = useState('');
@@ -19,21 +18,32 @@ export default () => {
   const itemsPerPage = 10; // Define itemsPerPage
 
   const handleSubmit = async (event) => {
-    console.log(event, 'e')
     event.preventDefault();
     const pageData = new FormData();
     pageData.append('serviceName', serviceName);
     pageData.append('serviceDescription', serviceDescription);
     pageData.append('file', imageUrl);
-    pageData.append('isActive', isActive)
+    pageData.append('isActive', isActive);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/post/services', pageData, {});
+      const response = await axios.post('http://13.126.67.232:8000/api/post/services', pageData, {});
       console.log(response);
+      toast.success('Data added successfully'); // Call toast.success after successful addition
+
+      // Reload page after successful submission
+      window.location.reload();
+
+      // Clear form data after submission
+      setServiceName('');
+      setServiceDescription('');
+      setImageUrl(null);
+      setIsActive(false);
     } catch (error) {
       console.error('Error:', error);
+      toast.error('Failed to add data'); // Display error toast if addition fails
     }
   }
+
 
   const handleImagesUpload = (event) => {
     const image = event.target.files[0];
@@ -42,7 +52,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/deleteimage/${id}`);
+      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteimage/${id}`);
       console.log(response);
       setData(data.filter(item => item.id !== id));
     } catch (error) {
@@ -51,7 +61,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/get/services')
+    axios.get('http://13.126.67.232:8000/api/get/services')
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -80,6 +90,16 @@ export default () => {
 
   return (
     <>
+      <ToastContainer />
+      <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
+        <div className="d-block mb-4 mb-xl-0">
+          <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
+            <Breadcrumb.Item><FontAwesomeIcon icon={faHome} /></Breadcrumb.Item>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item active>Service</Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
+      </div>
       <section className="d-flex align-items-center my-2 mt-lg-3 mb-lg-5">
         <Container>
           <form onSubmit={handleSubmit}>
@@ -100,7 +120,7 @@ export default () => {
                   <InputGroup>
                     <InputGroup.Text>
                     </InputGroup.Text>
-                    <Form.Control  as="textarea" placeholder="Service Description" value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} />
+                    <Form.Control as="textarea" placeholder="Service Description" value={serviceDescription} onChange={(e) => setServiceDescription(e.target.value)} />
                   </InputGroup>
                 </Form.Group>
               </Col>
