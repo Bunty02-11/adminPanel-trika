@@ -25,9 +25,15 @@ export default () => {
     pageData.append('name', name);
     pageData.append('file', carouselImages);
     pageData.append('isActive', isActive);
+
+    const token = localStorage.getItem('token');
   
     try {
-      const response = await axios.post('http://13.126.67.232:8000/api/addimage', pageData, {});
+      const response = await axios.post('http://65.1.14.171:8000/api/addimage', pageData, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
       console.log(response);
       toast.success('Image added successfully'); // Call toast.success after successful addition
   
@@ -53,7 +59,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteimage/${id}`);
+      const response = await axios.delete(`http://65.1.14.171:8000/api/deleteimage/${id}`);
       console.log(response); // Logging the response for debugging purposes
       // After successful deletion, update the data state to reflect the changes
       setData(data.filter(item => item.id !== id));
@@ -63,7 +69,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://13.126.67.232:8000/api/getimage')
+    axios.get('http://65.1.14.171:8000/api/getimage')
       .then(response => {
         console.log(response.data);
         setData(response.data);

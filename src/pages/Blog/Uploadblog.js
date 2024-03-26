@@ -28,9 +28,15 @@ export default () => {
         pageData.append('date', date);
         pageData.append('tagline', tagline);
         pageData.append('isActive', isActive);
+
+        const token = localStorage.getItem('token');
       
         try {
-          const response = await axios.post('http://13.126.67.232:8000/api/createblog', pageData, {});
+          const response = await axios.post('http://65.1.14.171:8000/api/createblog', pageData, {
+            headers: {
+                Authorization: `${token}`
+              }
+          });
           console.log(response);
           toast.success('Data added successfully'); // Call toast.success after successful addition
       
@@ -60,7 +66,7 @@ export default () => {
     }
 
     useEffect(() => {
-        axios.get(`http://13.126.67.232:8000/api/blog?page=${currentPage}&perPage=${itemsPerPage}`)
+        axios.get(`http://65.1.14.171:8000/api/blog?page=${currentPage}&perPage=${itemsPerPage}`)
             .then(response => {
                 console.log(response.data);
                 setData(response.data);
@@ -71,7 +77,7 @@ export default () => {
     }, [currentPage, itemsPerPage]);
 
     const handleDelete = (id) => {
-        axios.delete(`http://13.126.67.232:8000/api/delete/motivation/${id}`)
+        axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`)
             .then(response => {
                 console.log('Record deleted successfully:', response.data);
                 setData(prevData => prevData.filter(item => item.id !== id));

@@ -27,7 +27,7 @@ export default () => {
     pageData.append('description', description);
   
     try {
-      const response = await axios.post('http://13.126.67.232:8000/api/createabout', pageData, {});
+      const response = await axios.post('http://65.1.14.171:8000/api/createabout', pageData, {});
       console.log(response);
       toast.success('Data added successfully'); // Call toast.success after successful addition
   
@@ -51,7 +51,7 @@ export default () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://13.126.67.232:8000/api/deleteMedia/${id}`);
+      const response = await axios.delete(`http://65.1.14.171:8000/api/deleteMedia/${id}`);
       console.log(response);
       setData(data.filter(item => item.id !== id));
     } catch (error) {
@@ -60,7 +60,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get('http://13.126.67.232:8000/api/get/about')
+    axios.get('http://65.1.14.171:8000/api/get/about')
       .then(response => {
         console.log(response.data);
         setData(response.data);
