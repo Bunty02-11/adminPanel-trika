@@ -28,6 +28,7 @@ export default () => {
     const token = localStorage.getItem('token');
 
     try {
+      console.log(token)
       const response = await axios.post('http://65.1.14.171:8000/api/post/services', pageData, {
         headers: {
           Authorization: `${token}`

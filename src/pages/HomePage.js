@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Routes } from "../routes";
 
 // pages
-import Presentation from "./Presentation";
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import Transactions from "./Transactions";
@@ -110,7 +109,6 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
 
 export default () => (
   <Switch>
-    <RouteWithLoader exact path={Routes.Presentation.path} component={Presentation} />
     <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
     <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
     <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
