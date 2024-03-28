@@ -189,7 +189,7 @@ export default () => {
                         <InputGroup>
                           <InputGroup.Text>
                           </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="benfits_content" value={benfits_content} onChange={(e) => setBenfits_content(e.target.value)} />
+                          <Form.Control  as="textarea" placeholder="benfits_content" value={benfits_content} onChange={(e) => setBenfits_content(e.target.value)} />
                         </InputGroup>
                       </Form.Group>
                     </Col>
