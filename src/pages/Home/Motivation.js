@@ -23,7 +23,7 @@ export default () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const pageData = new FormData();
     pageData.append('Attribbute', attribbute);
     pageData.append('file', image);
@@ -33,7 +33,7 @@ export default () => {
     pageData.append('bullet_two', bullet_two);
     pageData.append('bullet_three', bullet_three);
     pageData.append('isActive', isActive);
-  
+
     const token = localStorage.getItem('token');
 
     try {
@@ -44,10 +44,10 @@ export default () => {
       });
       console.log(response);
       toast.success('Data added successfully'); // Call toast.success after successful addition
-  
+
       // Reload page after successful submission
       window.location.reload();
-  
+
       // Clear form data after submission
       setAttribbute('');
       setImage(null);
@@ -62,7 +62,7 @@ export default () => {
       toast.error('Failed to add data'); // Display error toast if addition fails
     }
   }
-  
+
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -85,15 +85,60 @@ export default () => {
   }, [currentPage, itemsPerPage]);
 
   const handleDelete = (id) => {
-    axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`)
+    const token = localStorage.getItem('token');
+
+    axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`, {
+      headers: {
+        Authorization: `${token}`
+      }
+    })
       .then(response => {
         console.log('Record deleted successfully:', response.data);
         setData(prevData => prevData.filter(item => item.id !== id));
+        toast.success('Record deleted successfully'); // Display success toast
+
+        // Reload the page
+        window.location.reload();
       })
       .catch(error => {
         console.error('Error deleting record:', error);
+        toast.error('Failed to delete record'); // Display error toast
       });
   }
+
+  // const handleEdit = (id) => {
+  //   const token = localStorage.getItem('token');
+
+  //   // Prepare the data to be updated
+  //   const updatedData = {
+  //     Attribbute: attribbute,
+  //     Heading: heading,
+  //     content: content,
+  //     bullet_one: bullet_one,
+  //     bullet_two: bullet_two,
+  //     bullet_three: bullet_three,
+  //     isActive: isActive
+  //   };
+
+  //   axios.put(`http://65.1.14.171:8000/api/update/motivation/${id}`, updatedData, {
+  //     headers: {
+  //       Authorization: `${token}`
+  //     }
+  //   })
+  //     .then(response => {
+  //       console.log('Record updated successfully:', response.data);
+  //       toast.success('Record updated successfully'); // Display success toast
+
+  //       // Reload the page
+  //       window.location.reload();
+  //     })
+  //     .catch(error => {
+  //       console.error('Error updating record:', error);
+  //       toast.error('Failed to update record'); // Display error toast
+  //     });
+  // }
+
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -111,7 +156,7 @@ export default () => {
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
@@ -202,7 +247,7 @@ export default () => {
                         <InputGroup>
                           <InputGroup.Text>
                           </InputGroup.Text>
-                          <Form.Control  as="textarea" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
+                          <Form.Control as="textarea" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
                         </InputGroup>
                       </Form.Group>
                     </Col>
@@ -279,9 +324,12 @@ export default () => {
                         <td>{row.bullet_three}</td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
+                          {/* <Button variant="info" size="sm" className="ms-2" onClick={() => handleEdit(row._id)}>
+                            Edit
+                          </Button> */}
                         </td>
                       </tr>
                     ))}

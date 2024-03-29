@@ -57,16 +57,25 @@ export default () => {
     setCarouselImages(image);
   }
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(`http://65.1.14.171:8000/api/deleteimage/${id}`);
-      console.log(response); // Logging the response for debugging purposes
-      // After successful deletion, update the data state to reflect the changes
-      setData(data.filter(item => item.id !== id));
-    } catch (error) {
-      console.error('Error:', error); // Log any errors
-    }
+  const handleDelete = (id) => {
+    const token = localStorage.getItem('token');
+  
+    axios.delete(`http://65.1.14.171:8000/api/deleteimage/${id}`, {
+      headers: {
+        Authorization: `${token}`
+      }
+    })
+    .then(response => {
+      console.log('Record deleted successfully:', response.data);
+      setData(prevData => prevData.filter(item => item.id !== id));
+      toast.success('Record deleted successfully'); // Display success toast
+    })
+    .catch(error => {
+      console.error('Error deleting record:', error);
+      toast.error('Failed to delete record'); // Display error toast
+    });
   }
+  
 
   useEffect(() => {
     axios.get('http://65.1.14.171:8000/api/getimage')
@@ -195,7 +204,7 @@ export default () => {
                         </td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </td>

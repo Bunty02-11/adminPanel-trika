@@ -17,7 +17,7 @@ export const Routes = {
     Uploadblog: {path: "/blog/uploadblog"},
     Billing: { path: "/examples/billing" },
     Invoice: { path: "/examples/invoice" },
-    Signin: { path: "/examples/sign-in" },
+    Signin: { path: "/sign-in" },
     Signup: { path: "/examples/sign-up" },
     ForgotPassword: { path: "/examples/forgot-password" },
     ResetPassword: { path: "/examples/reset-password" },

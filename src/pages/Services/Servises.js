@@ -23,7 +23,7 @@ export default () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const pageData = new FormData();
     pageData.append('file', image);
     pageData.append('heading', heading);
@@ -34,7 +34,7 @@ export default () => {
     pageData.append('isActive', isActive);
 
     const token = localStorage.getItem('token');
-  
+
     try {
       const response = await axios.post('http://65.1.14.171:8000/api/post/work', pageData, {
         headers: {
@@ -43,10 +43,10 @@ export default () => {
       });
       console.log(response);
       toast.success('Data added successfully'); // Call toast.success after successful addition
-  
+
       // Reload page after successful submission
       window.location.reload();
-  
+
       // Clear form data after submission
       setImage(null);
       setHeading('');
@@ -60,7 +60,7 @@ export default () => {
       toast.error('Failed to add data'); // Display error toast if addition fails
     }
   }
-  
+
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -83,15 +83,27 @@ export default () => {
   }, [currentPage, itemsPerPage]);
 
   const handleDelete = (id) => {
-    axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`)
+    const token = localStorage.getItem('token');
+
+    axios.delete(`http://65.1.14.171:8000/api/delete/work/${id}`, {
+      headers: {
+        Authorization: `${token}`
+      }
+    })
       .then(response => {
         console.log('Record deleted successfully:', response.data);
         setData(prevData => prevData.filter(item => item.id !== id));
+        toast.success('Record deleted successfully'); // Display success toast
+
+        // Reload the page after successful deletion
+        window.location.reload();
       })
       .catch(error => {
         console.error('Error deleting record:', error);
+        toast.error('Failed to delete record'); // Display error toast
       });
   }
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -144,7 +156,7 @@ export default () => {
                         <InputGroup>
                           <InputGroup.Text>
                           </InputGroup.Text>
-                          <Form.Control   as="textarea" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
+                          <Form.Control as="textarea" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
                         </InputGroup>
                       </Form.Group>
                     </Col>
@@ -189,7 +201,7 @@ export default () => {
                         <InputGroup>
                           <InputGroup.Text>
                           </InputGroup.Text>
-                          <Form.Control  as="textarea" placeholder="benfits_content" value={benfits_content} onChange={(e) => setBenfits_content(e.target.value)} />
+                          <Form.Control as="textarea" placeholder="benfits_content" value={benfits_content} onChange={(e) => setBenfits_content(e.target.value)} />
                         </InputGroup>
                       </Form.Group>
                     </Col>
@@ -248,7 +260,14 @@ export default () => {
                       <tr key={index}>
                         <td>{indexOfFirstItem + index + 1}</td>
                         <td>{row.heading}</td>
-                        <td>{row.content}</td>
+                        <td>
+                          {/* Rendering paragraph content as points */}
+                          <ul>
+                            {row.content.split('. ').map((point, index) => (
+                              <li key={index}>{point}</li>
+                            ))}
+                          </ul>
+                        </td>
                         <td>
                           {row.image && (
                             <img
@@ -261,10 +280,17 @@ export default () => {
                         </td>
                         <td>{row.service_name}</td>
                         <td>{row.benfits_heading}</td>
-                        <td>{row.benfits_content}</td>
+                        <td>
+                          {/* Rendering benefits content as points */}
+                          <ul>
+                            {row.benfits_content.split(/\.\s+/).map((point, index) => (
+                              <li key={index}>{point}</li>
+                            ))}
+                          </ul>
+                        </td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </td>

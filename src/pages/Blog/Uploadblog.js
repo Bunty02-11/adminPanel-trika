@@ -30,32 +30,32 @@ export default () => {
         pageData.append('isActive', isActive);
 
         const token = localStorage.getItem('token');
-      
+
         try {
-          const response = await axios.post('http://65.1.14.171:8000/api/createblog', pageData, {
-            headers: {
-                Authorization: `${token}`
-              }
-          });
-          console.log(response);
-          toast.success('Data added successfully'); // Call toast.success after successful addition
-      
-          // Reload page after successful submission
-          window.location.reload();
-      
-          // Clear form data after submission
-          setHeading('');
-          setImage(null);
-          setDescription('');
-          setDate('');
-          setTagline('');
-          setIsActive(false);
+            const response = await axios.post('http://65.1.14.171:8000/api/createblog', pageData, {
+                headers: {
+                    Authorization: `${token}`
+                }
+            });
+            console.log(response);
+            toast.success('Data added successfully'); // Call toast.success after successful addition
+
+            // Reload page after successful submission
+            window.location.reload();
+
+            // Clear form data after submission
+            setHeading('');
+            setImage(null);
+            setDescription('');
+            setDate('');
+            setTagline('');
+            setIsActive(false);
         } catch (error) {
-          console.error('Error:', error);
-          toast.error('Failed to add data'); // Display error toast if addition fails
+            console.error('Error:', error);
+            toast.error('Failed to add data'); // Display error toast if addition fails
         }
-      }
-      
+    }
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     }
@@ -77,15 +77,28 @@ export default () => {
     }, [currentPage, itemsPerPage]);
 
     const handleDelete = (id) => {
-        axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`)
-            .then(response => {
-                console.log('Record deleted successfully:', response.data);
-                setData(prevData => prevData.filter(item => item.id !== id));
-            })
-            .catch(error => {
-                console.error('Error deleting record:', error);
-            });
-    }
+        const token = localStorage.getItem('token');
+      
+        axios.delete(`http://65.1.14.171:8000/api/blog/${id}`, {
+          headers: {
+            Authorization: `${token}`
+          }
+        })
+        .then(response => {
+          console.log('Record deleted successfully:', response.data);
+          setData(prevData => prevData.filter(item => item.id !== id));
+          toast.success('Record deleted successfully'); // Display success toast
+      
+          // Reload the page
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error deleting record:', error);
+          toast.error('Failed to delete record'); // Display error toast
+        });
+      }
+      
+    
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -245,7 +258,7 @@ export default () => {
                                                 <td>{row.tagline}</td>
                                                 <td>{row.isActive ? "True" : "False"}</td>
                                                 <td>
-                                                    <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                                                    <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>
                                                 </td>

@@ -57,15 +57,28 @@ export default () => {
     setImageUrl(imageUrl);
   }
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(`http://65.1.14.171:8000/api/deleteimage/${id}`);
-      console.log(response);
-      setData(data.filter(item => item.id !== id));
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const handleDelete = (id) => {
+    const token = localStorage.getItem('token');
+  
+    axios.delete(`http://65.1.14.171:8000/api/banner/${id}`, {
+      headers: {
+        Authorization: `${token}`
+      }
+    })
+    .then(response => {
+      console.log('Record deleted successfully:', response.data);
+      setData(prevData => prevData.filter(item => item.id !== id));
+      toast.success('Record deleted successfully'); // Display success toast
+  
+      // Reload the page
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error deleting record:', error);
+      toast.error('Failed to delete record'); // Display error toast
+    });
   }
+  
 
   useEffect(() => {
     axios.get('http://65.1.14.171:8000/api/banner')
@@ -167,7 +180,7 @@ export default () => {
                           )}
                         </td>
                         <td>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </td>
