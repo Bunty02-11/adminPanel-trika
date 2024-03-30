@@ -100,8 +100,8 @@ export default (props = {}) => {
             <Nav className="flex-column pt-3 pt-md-0">
               <NavItem title="Volt React" link={Routes.DashboardOverview.path} image={ReactHero} />
 
-               <NavItem title="Dashboard" link={Routes.DashboardOverview.path} icon={faDesktop} /> 
-               {/* <NavItem title="Sign In" link={Routes.Signin.path}  icon={faSignInAlt}/>
+              <NavItem title="Dashboard" link={Routes.DashboardOverview.path} icon={faDesktop} />
+              {/* <NavItem title="Sign In" link={Routes.Signin.path}  icon={faSignInAlt}/>
                <NavItem title="Sign Up" link={Routes.Signup.path} icon={faSignLanguage} /> */}
               {/* <NavItem external title="Messages" link="https://demo.themesberg.com/volt-pro-react/#/messages" target="_blank" badgeText="Pro" icon={faInbox} />
               <NavItem title="Transactions" icon={faHandHoldingUsd} link={Routes.Transactions.path} />
@@ -116,8 +116,8 @@ export default (props = {}) => {
               </CollapsableNavItem>
 
               <CollapsableNavItem eventKey="examples/" title="About" icon={faInfo}>
-                
-                
+
+
                 <NavItem title="Banner" link={Routes.Banner.path} />
                 <NavItem title="About us" link={Routes.Aboutus.path} />
                 <NavItem title="Testimonial" link={Routes.Testimonial.path} />
@@ -134,7 +134,10 @@ export default (props = {}) => {
               </CollapsableNavItem>
               <NavItem title="Contact" link={Routes.Contact.path} icon={faPhone} />
               {/* <NavItem external title="Themesberg" link="https://themesberg.com" target="_blank" image={ThemesbergLogo} /> */}
-              <Button as={Link} to={Routes.Signin.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faSignOutAlt} className="me-1" />Logout</Button>
+              <Button onClick={() => {
+                localStorage.removeItem('token');
+                window.location.href = Routes.Signin.path;
+              }} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faSignOutAlt} className="me-1" />Logout</Button>
             </Nav>
           </div>
         </SimpleBar>

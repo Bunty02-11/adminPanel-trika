@@ -90,10 +90,10 @@ export default () => {
                         </InputGroup>
                       </Form.Group>
                       <div className="d-flex justify-content-between align-items-center mb-4">
-                        <Form.Check type="checkbox">
+                        {/* <Form.Check type="checkbox">
                           <FormCheck.Input id="defaultCheck5" className="me-2" />
                           <FormCheck.Label htmlFor="defaultCheck5" className="mb-0">Remember me</FormCheck.Label>
-                        </Form.Check>
+                        </Form.Check> */}
                         <Card.Link className="small text-end">Lost password?</Card.Link>
                       </div>
                     </Form.Group>
@@ -102,20 +102,7 @@ export default () => {
                     </Button>
                   </Form>
 
-                  <div className="mt-3 mb-4 text-center">
-                    <span className="fw-normal">or login with</span>
-                  </div>
-                  <div className="d-flex justify-content-center my-4">
-                    <Button variant="outline-light" className="btn-icon-only btn-pill text-facebook me-2">
-                      <FontAwesomeIcon icon={faFacebookF} />
-                    </Button>
-                    <Button variant="outline-light" className="btn-icon-only btn-pill text-twitter me-2">
-                      <FontAwesomeIcon icon={faTwitter} />
-                    </Button>
-                    <Button variant="outline-light" className="btn-icon-only btn-pil text-dark">
-                      <FontAwesomeIcon icon={faGithub} />
-                    </Button>
-                  </div>
+               
                 </div>
               </Col>
             </Row>

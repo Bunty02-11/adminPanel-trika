@@ -16,7 +16,7 @@ export default () => {
             <h1 className="h2">Navbars</h1>
             <p className="mb-0">
               Use the responsive navigation bar from Volt to add nav items and multi-level nested dropdowns for a seamless navigation.
-          </p>
+            </p>
           </Col>
         </Row>
 
