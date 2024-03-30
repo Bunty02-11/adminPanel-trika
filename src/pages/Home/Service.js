@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Card, Button, Table, Container, InputGroup, Modal } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,7 +15,14 @@ export default () => {
   const [clickedImage, setClickedImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
+  const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10; // Define itemsPerPage
+
+  // State variables for edit modal
+  const [editServiceName, setEditServiceName] = useState('');
+  const [editServiceDescription, setEditServiceDescription] = useState('');
+  const [editIsActive, setEditIsActive] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -59,21 +66,21 @@ export default () => {
 
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
-  
+
     axios.delete(`http://65.1.14.171:8000/api/services/${id}`, {
       headers: {
         Authorization: `${token}`
       }
     })
-    .then(response => {
-      console.log('Record deleted successfully:', response.data);
-      setData(prevData => prevData.filter(item => item.id !== id));
-      toast.success('Record deleted successfully'); // Display success toast
-    })
-    .catch(error => {
-      console.error('Error deleting record:', error);
-      toast.error('Failed to delete record'); // Display error toast
-    });
+      .then(response => {
+        console.log('Record deleted successfully:', response.data);
+        setData(prevData => prevData.filter(item => item.id !== id));
+        toast.success('Record deleted successfully'); // Display success toast
+      })
+      .catch(error => {
+        console.error('Error deleting record:', error);
+        toast.error('Failed to delete record'); // Display error toast
+      });
   }
 
   useEffect(() => {
@@ -103,6 +110,45 @@ export default () => {
     setShowModal(false);
     setClickedImage(null);
   }
+  const handleEditModal = (item) => {
+    setEditItemId(item._id);
+    setEditServiceName(item.serviceName);
+    setEditServiceDescription(item.serviceDescription);
+    setEditIsActive(item.isActive);
+    setShowModal(true);
+    setEditMode(true); // Set editMode to true when opening the edit modal
+  }
+
+  const handleEditSubmit = async () => {
+    const token = localStorage.getItem('token');
+    const editData = {
+      serviceName: editServiceName,
+      serviceDescription: editServiceDescription,
+      isActive: editIsActive
+    };
+
+    try {
+      const response = await axios.put(`http://65.1.14.171:8000/api/services/${editItemId}`, editData, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+      console.log('Updated data:', response.data);
+      toast.success('Data updated successfully');
+      setShowModal(false);
+      setData(prevData => prevData.map(item => item._id === editItemId ? { ...item, ...editData } : item));
+    } catch (error) {
+      console.error('Error updating record:', error);
+      toast.error('Failed to update record');
+    }
+  }
+
+
+
+  // Calculate the index of the first item to display based on the current page and items per page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <>
@@ -178,82 +224,124 @@ export default () => {
           </form>
         </Container>
       </section>
-      <Col xs={12} lg={8} className="mx-auto">
-        <Card border="light" className="shadow-sm">
-          <Card.Header>
-            <Row className="align-items-center">
-              <Col>
-                <h5>Service List</h5>
-              </Col>
-              <Col className="text-end">
-                <Button variant="secondary" size="sm">See all</Button>
-              </Col>
-            </Row>
-          </Card.Header>
-          <Table responsive className="align-items-center table-flush">
-            <thead className="thead-light">
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Service Name</th>
-                <th scope="col">Service Description</th>
-                <th scope="col">Service Image</th>
-                <th scope="col">Active</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.slice(startIndex, endIndex).map((row, index) => (
-                <tr key={index}>
-                  <td>{startIndex + index + 1}</td>
-                  <td>{row.serviceName}</td>
-                  <td>{row.serviceDescription}</td>
-                  <td>
-                    {row.serviceImage && (
-                      <img
-                        src={row.serviceImage}
-                        alt="Service Image"
-                        style={{ maxWidth: "100px", cursor: "pointer" }}
-                        onClick={() => handleImageClick(row.serviceImage)}
-                      />
-                    )}
-                  </td>
-                  <td>{row.isActive ? "True" : "False"}</td>
-                  <td>
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
-                      <FontAwesomeIcon icon={faTrash} />
+      <section>
+        <Container>
+          <Row>
+            <Col xs={12} lg={8} className="mx-auto">
+              <Card border="light" className="shadow-sm">
+                <Card.Header>
+                  <Row className="align-items-center">
+                    <Col>
+                      <h5>Service List</h5>
+                    </Col>
+                    <Col className="text-end">
+                      <Button variant="secondary" size="sm">See all</Button>
+                    </Col>
+                  </Row>
+                </Card.Header>
+                <Table responsive className="align-items-center table-flush">
+                  <thead className="thead-light">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Service Name</th>
+                      <th scope="col">Service Description</th>
+                      <th scope="col">Service Image</th>
+                      <th scope="col">Active</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.slice(startIndex, endIndex).map((row, index) => (
+                      <tr key={index}>
+                        <td>{startIndex + index + 1}</td>
+                        <td>{row.serviceName}</td>
+                        <td>{row.serviceDescription}</td>
+                        <td>
+                          {row.serviceImage && (
+                            <img
+                              src={row.serviceImage}
+                              alt="Service Image"
+                              style={{ maxWidth: "100px", cursor: "pointer" }}
+                              onClick={() => handleImageClick(row.serviceImage)}
+                            />
+                          )}
+                        </td>
+                        <td>{row.isActive ? "True" : "False"}</td>
+                        <td>
+                          <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
+                            <FontAwesomeIcon icon={faEdit} />
+                          </Button>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                            <FontAwesomeIcon icon={faTrash} />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan="8">
+                        <div className="d-flex justify-content-center mt-3">
+                          <Button
+                            variant="light"
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            className="me-2"
+                          >
+                            <FontAwesomeIcon icon={faAngleLeft} />
+                          </Button>
+                          <Button
+                            variant="light"
+                            disabled={currentItems.length < itemsPerPage}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            className="ms-2"
+                          >
+                            <FontAwesomeIcon icon={faAngleRight} />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </Table>
+                <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
+                  <Modal.Header>
+                    <Modal.Title>Edit Blog</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Form.Group className="mb-3" controlId="editHeading">
+                        <Form.Label>serviceName</Form.Label>
+                        <Form.Control type="text" value={editServiceName} onChange={(e) => setEditServiceName(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editDescription">
+                        <Form.Label>serviceDescription</Form.Label>
+                        <Form.Control as="textarea" rows={3} value={editServiceDescription} onChange={(e) => setEditServiceDescription(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editIsActive">
+                        <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
+                      </Form.Group>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setEditMode(false)}>
+                      Cancel
                     </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <div className="d-flex justify-content-center mt-3">
-            <Button
-              variant="light"
-              disabled={currentPage === 0}
-              onClick={() => handlePageChange(currentPage - 1)}
-              className="me-2"
-            >
-              <FontAwesomeIcon icon={faAngleLeft} />
-            </Button>
-            <Button
-              variant="light"
-              disabled={(currentPage + 1) * itemsPerPage >= data.length}
-              onClick={() => handlePageChange(currentPage + 1)}
-              className="ms-2"
-            >
-              <FontAwesomeIcon icon={faAngleRight} />
-            </Button>
-          </div>
-        </Card>
-      </Col>
-
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Zoomed Image</Modal.Title>
+                    <Button variant="primary" onClick={handleEditSubmit}>
+                      Save Changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+      <Modal show={showModal && !editMode} onHide={handleCloseModal}>
+        <Modal.Header>
+          <Modal.Title>{data.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
+          <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} onClick={() => setEditMode(true)} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,13 +17,21 @@ export default () => {
   const [benfits_content, setBenfits_content] = useState('');
   const [isActive, setIsActive] = useState('false');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(4); // Changed to 4 items per page
+  const [itemsPerPage, setItemsPerPage] = useState(4);
   const [showModal, setShowModal] = useState(false);
   const [clickedImage, setClickedImage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+
+  const [editHeading, setEditHeading] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [editService_Name, setEditService_name] = useState('');
+  const [editBenfits_Heading, setEditBenfits_heading] = useState('');
+  const [editBenfits_Content, setEditBenfits_content] = useState('');
+  const [editIsActive, setEditIsActive] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const pageData = new FormData();
     pageData.append('file', image);
     pageData.append('heading', heading);
@@ -41,13 +49,8 @@ export default () => {
           Authorization: `${token}`
         }
       });
-      console.log(response);
-      toast.success('Data added successfully'); // Call toast.success after successful addition
-
-      // Reload page after successful submission
+      toast.success('Data added successfully');
       window.location.reload();
-
-      // Clear form data after submission
       setImage(null);
       setHeading('');
       setContent('');
@@ -57,10 +60,9 @@ export default () => {
       setIsActive(false);
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Failed to add data'); // Display error toast if addition fails
+      toast.error('Failed to add data');
     }
   }
-
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -74,7 +76,6 @@ export default () => {
   useEffect(() => {
     axios.get(`http://65.1.14.171:8000/api/get/work?page=${currentPage}&perPage=${itemsPerPage}`)
       .then(response => {
-        console.log(response.data);
         setData(response.data);
       })
       .catch(error => {
@@ -84,26 +85,21 @@ export default () => {
 
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
-
     axios.delete(`http://65.1.14.171:8000/api/delete/work/${id}`, {
       headers: {
         Authorization: `${token}`
       }
     })
       .then(response => {
-        console.log('Record deleted successfully:', response.data);
         setData(prevData => prevData.filter(item => item.id !== id));
-        toast.success('Record deleted successfully'); // Display success toast
-
-        // Reload the page after successful deletion
+        toast.success('Record deleted successfully');
         window.location.reload();
       })
       .catch(error => {
         console.error('Error deleting record:', error);
-        toast.error('Failed to delete record'); // Display error toast
+        toast.error('Failed to delete record');
       });
   }
-
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -114,7 +110,55 @@ export default () => {
     setShowModal(true);
   }
 
-  // Calculate the index of the first item to display based on the current page and items per page
+  const handleEditModal = (row) => {
+    console.log(row);
+    setEditItemId(row._id);
+    setEditHeading(row.heading);
+    setEditContent(row.content);
+    setEditBenfits_content(row.benfits_content);
+    setEditBenfits_heading(row.benfits_heading);
+    setEditService_name(row.service_name);
+    setEditIsActive(row.isActive);
+    setShowModal(true);
+    setEditMode(true);
+  }
+
+  const handleEditSubmit = async () => {
+    const token = localStorage.getItem('token');
+    const editData = {
+      heading: editHeading,
+      content: editContent,
+      service_name: editService_Name,
+      benfits_heading: editBenfits_Heading,
+      benfits_content: editBenfits_Content,
+      isActive: editIsActive
+    };
+
+    try {
+      const response = await axios.put(`http://65.1.14.171:8000/api/update/work/${editItemId}`, editData, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+      toast.success('Data updated successfully');
+      setShowModal(false);
+      setData(prevData => prevData.map(item => item._id === editItemId ? { ...item, ...editData } : item));
+    } catch (error) {
+      console.error('Error updating record:', error);
+      toast.error('Failed to update record');
+    }
+  }
+
+  const clearFormData = () => {
+    setHeading('');
+    setImage(null);
+    setContent('');
+    setBenfits_content('');
+    setBenfits_heading('');
+    setService_name('');
+    setIsActive(false);
+  }
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
@@ -290,6 +334,10 @@ export default () => {
                         </td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
+                          <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
+                            <FontAwesomeIcon icon={faEdit} />
+                          </Button>
+
                           <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
@@ -322,17 +370,58 @@ export default () => {
                     </tr>
                   </tfoot>
                 </Table>
+                <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
+                  <Modal.Header>
+                    <Modal.Title>Edit Blog</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Form.Group className="mb-3" controlId="editHeading">
+                        <Form.Label>Heading</Form.Label>
+                        <Form.Control type="text" value={editHeading} onChange={(e) => setEditHeading(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editContent">
+                        <Form.Label>Content</Form.Label>
+                        <Form.Control as="textarea" value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editServiceName">
+                        <Form.Label>Service Name</Form.Label>
+                        <Form.Control type="text" value={editService_Name} onChange={(e) => setEditService_name(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editBenefitsHeading">
+                        <Form.Label>Benefits Heading</Form.Label>
+                        <Form.Control type="text" value={editBenfits_Heading} onChange={(e) => setEditBenfits_heading(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editBenefitsContent">
+                        <Form.Label>Benefits Content</Form.Label>
+                        <Form.Control as="textarea" value={editBenfits_Content} onChange={(e) => setEditBenfits_content(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editIsActive">
+                        <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
+                      </Form.Group>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setEditMode(false)}>
+                      Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleEditSubmit}>
+                      Save Changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
               </Card>
             </Col>
           </Row>
         </Container>
       </section>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+      <Modal show={showModal && !editMode} onHide={handleCloseModal}>
+        <Modal.Header>
           <Modal.Title>{data.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
+          <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} onClick={() => setEditMode(true)} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,6 +20,18 @@ export default () => {
   const [itemsPerPage, setItemsPerPage] = useState(4); // Changed to 4 items per page
   const [showModal, setShowModal] = useState(false);
   const [clickedImage, setClickedImage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+
+
+  // State variables for edit modal
+  const [editAttribbute, setEditAttribbute] = useState('');
+  const [editHeading, setEditHeading] = useState('');
+  const [editBullet_one, setEditBullet_one] = useState('');
+  const [editBullet_two, setEditBullet_two] = useState('');
+  const [editBullet_three, setEditBullet_three] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [editIsActive, setEditIsActive] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -106,38 +118,6 @@ export default () => {
       });
   }
 
-  // const handleEdit = (id) => {
-  //   const token = localStorage.getItem('token');
-
-  //   // Prepare the data to be updated
-  //   const updatedData = {
-  //     Attribbute: attribbute,
-  //     Heading: heading,
-  //     content: content,
-  //     bullet_one: bullet_one,
-  //     bullet_two: bullet_two,
-  //     bullet_three: bullet_three,
-  //     isActive: isActive
-  //   };
-
-  //   axios.put(`http://65.1.14.171:8000/api/update/motivation/${id}`, updatedData, {
-  //     headers: {
-  //       Authorization: `${token}`
-  //     }
-  //   })
-  //     .then(response => {
-  //       console.log('Record updated successfully:', response.data);
-  //       toast.success('Record updated successfully'); // Display success toast
-
-  //       // Reload the page
-  //       window.location.reload();
-  //     })
-  //     .catch(error => {
-  //       console.error('Error updating record:', error);
-  //       toast.error('Failed to update record'); // Display error toast
-  //     });
-  // }
-
 
 
   const handleCloseModal = () => {
@@ -148,6 +128,49 @@ export default () => {
     setClickedImage(imageUrl);
     setShowModal(true);
   }
+
+  const handleEditModal = (item) => {
+    setEditItemId(item._id);
+    setEditAttribbute(item._id);
+    setEditHeading(item.Heading);
+    setEditContent(item.content);
+    setEditBullet_one(item.bullet_one);
+    setEditBullet_two(item.bullet_two);
+    setEditBullet_three(item.bullet_three);
+    setEditIsActive(item.isActive);
+    setShowModal(true);
+    setEditMode(true); // Set editMode to true when opening the edit modal
+  }
+
+  const handleEditSubmit = async () => {
+    const token = localStorage.getItem('token');
+    const editData = {
+      Heading: editHeading,
+      attribbute: editAttribbute,
+      content: editContent,
+      bullet_one: editBullet_one,
+      bullet_two: editBullet_two,
+      bullet_three: editBullet_three,
+      isActive: editIsActive
+    };
+
+    try {
+      const response = await axios.put(`http://65.1.14.171:8000/api/update/motivation/${editItemId}`, editData, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+      console.log('Updated data:', response.data);
+      toast.success('Data updated successfully');
+      setShowModal(false);
+      setData(prevData => prevData.map(item => item._id === editItemId ? { ...item, ...editData } : item));
+    } catch (error) {
+      console.error('Error updating record:', error);
+      toast.error('Failed to update record');
+    }
+  }
+
+
 
   // Calculate the index of the first item to display based on the current page and items per page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -324,12 +347,13 @@ export default () => {
                         <td>{row.bullet_three}</td>
                         <td>{row.isActive ? "True" : "False"}</td>
                         <td>
+                          <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
+                            <FontAwesomeIcon icon={faEdit} />
+                          </Button>
                           <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
-                          {/* <Button variant="info" size="sm" className="ms-2" onClick={() => handleEdit(row._id)}>
-                            Edit
-                          </Button> */}
+
                         </td>
                       </tr>
                     ))}
@@ -359,17 +383,61 @@ export default () => {
                     </tr>
                   </tfoot>
                 </Table>
+                <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
+                  <Modal.Header>
+                    <Modal.Title>Edit Blog</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Form.Group className="mb-3" controlId="editHeading">
+                        <Form.Label>Attribbute</Form.Label>
+                        <Form.Control type="text" value={editAttribbute} onChange={(e) => setEditAttribbute(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editHeading">
+                        <Form.Label>Heading</Form.Label>
+                        <Form.Control type="text" value={editHeading} onChange={(e) => setEditHeading(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editDate">
+                        <Form.Label>Content</Form.Label>
+                        <Form.Control type="text" value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editDescription">
+                        <Form.Label>Bullet_one</Form.Label>
+                        <Form.Control as="textarea" rows={3} value={editBullet_one} onChange={(e) => setEditBullet_one(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editTagline">
+                        <Form.Label>Bullet_two</Form.Label>
+                        <Form.Control type="text" value={editBullet_two} onChange={(e) => setEditBullet_two(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editTagline">
+                        <Form.Label>Bullet_three</Form.Label>
+                        <Form.Control type="text" value={editBullet_three} onChange={(e) => setEditBullet_three(e.target.value)} />
+                      </Form.Group>
+                      <Form.Group className="mb-3" controlId="editIsActive">
+                        <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
+                      </Form.Group>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setEditMode(false)}>
+                      Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleEditSubmit}>
+                      Save Changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </Card>
             </Col>
           </Row>
         </Container>
       </section>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+      <Modal show={showModal && !editMode} onHide={handleCloseModal}>
+        <Modal.Header>
           <Modal.Title>{data.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
+          <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} onClick={() => setEditMode(true)} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
