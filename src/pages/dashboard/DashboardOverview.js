@@ -9,8 +9,33 @@ import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
 
 export default () => {
+
+  const [customers, setCustomers] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch('http://65.1.14.171:8000/api/get/work')
+      .then(response => response.json())
+      .then(data => setCustomers(data))
+      .catch(error => console.error(error));
+  }, []);
+
+  // ...
+  const [contacts, setContacts] = React.useState([]);
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    const headers = token ? { Authorization: ` ${token}` } : {};
+
+    fetch('http://65.1.14.171:8000/api/getcontact', { headers })
+      .then(response => response.json())
+      .then(data => setContacts(data))
+      .catch(error => console.error(error));
+  }, []);
+
+
+
   return (
-    <>      
+    <>
 
       <Row className="justify-content-md-center">
         <Col xs={12} className="mb-4 d-none d-sm-block">
@@ -29,17 +54,16 @@ export default () => {
         </Col>
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CounterWidget
-            category="Customers"
-            title="345k"
+            category=" Total Services "
+            title={customers.length.toString()}
             icon={faChartLine}
             iconColor="shape-secondary"
           />
         </Col>
-
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CounterWidget
-            category="Toatl Services"
-            title="0"
+            category="Total  Customers"
+            title={contacts.length.toString()}
             icon={faCashRegister}
             iconColor="shape-tertiary"
           />
@@ -52,7 +76,7 @@ export default () => {
         </Col>
       </Row>
 
-      <Row>
+      {/* <Row>
         <Col xs={12} xl={12} className="mb-4">
           <Row>
             <Col xs={12} xl={8} className="mb-4">
@@ -76,7 +100,7 @@ export default () => {
             </Col>
           </Row>
         </Col>
-      </Row>
+      </Row> */}
     </>
   );
 };

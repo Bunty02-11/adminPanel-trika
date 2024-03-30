@@ -16,7 +16,10 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get(`http://65.1.14.171:8000/api/getcontact`)
+    const token = localStorage.getItem('token');
+    const headers = token ? { Authorization: ` ${token}` } : {};
+
+    axios.get(`http://65.1.14.171:8000/api/getcontact`, { headers })
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -25,6 +28,7 @@ export default () => {
         console.log(error);
       });
   }, [currentPage]);
+
 
   const handleDelete = (id) => {
     axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`)
