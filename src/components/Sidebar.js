@@ -87,10 +87,7 @@ export default (props = {}) => {
                   <Image src={ProfilePicture} className="card-img-top rounded-circle border-white" />
                 </div>
                 <div className="d-block">
-                  <h6>Hi, Jane</h6>
-                  <Button as={Link} variant="secondary" size="xs" to={Routes.Signin.path} className="text-dark">
-                    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" /> Sign Out
-                  </Button>
+                  <h6>Hi, Sonia</h6>
                 </div>
               </div>
               <Nav.Link className="collapse-close d-md-none" onClick={onCollapse}>
@@ -98,9 +95,9 @@ export default (props = {}) => {
               </Nav.Link>
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
-              <NavItem title="Volt React" link={Routes.DashboardOverview.path} image={ReactHero} />
+              <NavItem title="Trika" link={Routes.DashboardOverview.path} image={ReactHero} />
 
-              <NavItem title="Dashboard" link={Routes.DashboardOverview.path} icon={faDesktop} />
+             
               {/* <NavItem title="Sign In" link={Routes.Signin.path}  icon={faSignInAlt}/>
                <NavItem title="Sign Up" link={Routes.Signup.path} icon={faSignLanguage} /> */}
               {/* <NavItem external title="Messages" link="https://demo.themesberg.com/volt-pro-react/#/messages" target="_blank" badgeText="Pro" icon={faInbox} />
