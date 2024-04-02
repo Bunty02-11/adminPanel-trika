@@ -19,7 +19,7 @@ export default () => {
     const token = localStorage.getItem('token');
     const headers = token ? { Authorization: ` ${token}` } : {};
 
-    axios.get(`http://65.1.14.171:8000/api/getcontact`, { headers })
+    axios.get(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/getcontact`, { headers })
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -31,7 +31,7 @@ export default () => {
 
 
   const handleDelete = (id) => {
-    axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`)
+    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/delete/motivation/${id}`)
       .then(response => {
         console.log('Record deleted successfully:', response.data);
         setData(prevData => prevData.filter(item => item.id !== id));

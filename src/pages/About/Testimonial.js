@@ -3,7 +3,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
-import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
+import { Col, Row, Form, Card, Button, Table, Container, InputGroup, Nav, Tab } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -39,7 +39,7 @@ export default () => {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await axios.post('http://65.1.14.171:8000/api/uploadtestimonal', pageData, {
+      const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/uploadtestimonal', pageData, {
         headers: {
           Authorization: `${token}`
         }
@@ -71,7 +71,7 @@ export default () => {
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
 
-    axios.delete(`http://65.1.14.171:8000/api/delete/testimonal/${id}`, {
+    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/delete/testimonal/${id}`, {
       headers: {
         Authorization: `${token}`
       }
@@ -92,7 +92,7 @@ export default () => {
 
 
   useEffect(() => {
-    axios.get('http://65.1.14.171:8000/api/get/testimonal')
+    axios.get('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/get/testimonal')
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -139,7 +139,7 @@ export default () => {
     };
 
     try {
-      const response = await axios.put(`http://65.1.14.171:8000/api/update/testimonal/${editItemId}`, editData, {
+      const response = await axios.put(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/update/testimonal/${editItemId}`, editData, {
         headers: {
           Authorization: `${token}`
         }
@@ -172,234 +172,258 @@ export default () => {
           </Breadcrumb>
         </div>
       </div>
-      <section>
-        <Container>
-          <Row>
-            <Col xs={12} className="mb-4">
-              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0">Testimonials</h3>
-                </div>
-                <Form className="mt-4" onSubmit={handleSubmit}>
-                  <Row>
-                    <Col className="mb-4">
-                      <Form.Group id="serviceName">
-                        <Form.Label>Name</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
+      <Tab.Container defaultActiveKey="home">
+        <Nav fill variant="pills" className="flex-column flex-sm-row">
+          <Nav.Item>
+            <Nav.Link eventKey="home" className="mb-sm-3 mb-md-0">
+              Form
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="profile" className="mb-sm-3 mb-md-0">
+              Table
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+        <Tab.Content>
+          <Tab.Pane eventKey="home" className="py-4">
+            <section>
+              <Container>
+                <Row>
+                  <Col xs={12} className="mb-4">
+                    <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                      <div className="text-center text-md-center mb-4 mt-md-0">
+                        <h3 className="mb-0">Testimonials</h3>
+                      </div>
+                      <Form className="mt-4" onSubmit={handleSubmit}>
+                        <Row>
+                          <Col className="mb-4">
+                            <Form.Group id="serviceName">
+                              <Form.Label>Name</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
 
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} className="mb-4">
-                      <Form.Group id="serviceDescription">
-                        <Form.Label>Message</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} className="mb-4">
+                            <Form.Group id="serviceDescription">
+                              <Form.Label>Message</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
 
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} className="mb-4">
-                      <Form.Group id="serviceImage">
-                        <Form.Label>Image</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} className="mb-4">
+                            <Form.Group id="serviceImage">
+                              <Form.Label>Image</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
 
-                          </InputGroup.Text>
-                          <Form.Control
-                            type="file"
-                            accept="images/*"
-                            onChange={handleImageUpload}
-                            placeholder="Upload Image"
-                          />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} className="mb-4">
-                      <Form.Group id="rating">
-                        <Form.Label>Rating</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control
+                                  type="file"
+                                  accept="images/*"
+                                  onChange={handleImageUpload}
+                                  placeholder="Upload Image"
+                                />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} className="mb-4">
+                            <Form.Group id="rating">
+                              <Form.Label>Rating</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
 
-                          </InputGroup.Text>
-                          <Form.Select required value={rating} onChange={(e) => setRating(e.target.value)}>
-                            <option value="">Select Option</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </Form.Select>
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} className="mb-4">
-                      <Form.Group id="isActive">
-                        <Form.Label>Is Active</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Select required value={rating} onChange={(e) => setRating(e.target.value)}>
+                                  <option value="">Select Option</option>
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                </Form.Select>
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} className="mb-4">
+                            <Form.Group id="isActive">
+                              <Form.Label>Is Active</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
 
-                          </InputGroup.Text>
-                          <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
-                            <option value="">Select Option</option>
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                          </Form.Select>
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Button variant="primary" type="submit" className="w-100 mt-3">
-                    Submit
-                  </Button>
-                </Form>
-              </div>
-            </Col>
-          </Row>
+                                </InputGroup.Text>
+                                <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
+                                  <option value="">Select Option</option>
+                                  <option value="true">True</option>
+                                  <option value="false">False</option>
+                                </Form.Select>
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Button variant="primary" type="submit" className="w-100 mt-3">
+                          Submit
+                        </Button>
+                      </Form>
+                    </div>
+                  </Col>
+                </Row>
+                </Container>
+            </section>
+            </Tab.Pane>
+          <Tab.Pane eventKey="profile" className="py-4">
 
-          <Row>
-            <Col xs={12}>
-              <Card border="light" className="shadow-sm mt-4">
-                <Card.Header>
-                  <Row className="align-items-center">
-                    <Col>
-                      <h5>Testimonials</h5>
-                    </Col>
-                  </Row>
-                </Card.Header>
-                <Table responsive className="align-items-center table-flush">
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Message</th>
-                      <th scope="col">Rating</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Active</th>
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.slice(startIndex, endIndex).map((row, index) => (
-                      <tr key={index}>
-                        <td>{startIndex + index + 1}</td>
-                        <td>{row.name}</td>
-                        <td>{row.message}</td>
-                        <td>{row.rating}</td>
-                        <td>
-                          {row.image && (
-                            <img
-                              src={row.image}
-                              alt="Carousel Image"
-                              style={{ maxWidth: "100px", cursor: "pointer" }}
-                              onClick={() => handleImageClick(row.image)}
-                            />
-                          )}
-                        </td>
-                        <td>{row.isActive ? "True" : "False"}</td>
-                        <td>
-                          <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
-                            <FontAwesomeIcon icon={faEdit} />
-                          </Button>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="8">
-                        <div className="d-flex justify-content-center mt-3">
-                          <Button
-                            variant="light"
-                            disabled={currentPage === 1}
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            className="me-2"
-                          >
-                            <FontAwesomeIcon icon={faAngleLeft} />
-                          </Button>
-                          <Button
-                            variant="light"
-                            disabled={currentItems.length < itemsPerPage}
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            className="ms-2"
-                          >
-                            <FontAwesomeIcon icon={faAngleRight} />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </Table>
-                <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
-                  <Modal.Header>
-                    <Modal.Title>Edit Blog</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form>
-                      <Form.Group className="mb-3" controlId="editHeading">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" value={editName} onChange={(e) => setEditName(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editDate">
-                        <Form.Label>Message</Form.Label>
-                        <Form.Control type="text" value={editMessage} onChange={(e) => setEditMessage(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group id="rating">
-                        <Form.Label>Rating</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
+            <section>
+              <Container>
+              <Row>
+                <Col xs={12}>
+                  <Card border="light" className="shadow-sm mt-4">
+                    <Card.Header>
+                      <Row className="align-items-center">
+                        <Col>
+                          <h5>Testimonials</h5>
+                        </Col>
+                      </Row>
+                    </Card.Header>
+                    <Table responsive className="align-items-center table-flush">
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Message</th>
+                          <th scope="col">Rating</th>
+                          <th scope="col">Image</th>
+                          <th scope="col">Active</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.slice(startIndex, endIndex).map((row, index) => (
+                          <tr key={index}>
+                            <td>{startIndex + index + 1}</td>
+                            <td>{row.name}</td>
+                            <td>{row.message}</td>
+                            <td>{row.rating}</td>
+                            <td>
+                              {row.image && (
+                                <img
+                                  src={row.image}
+                                  alt="Carousel Image"
+                                  style={{ maxWidth: "100px", cursor: "pointer" }}
+                                  onClick={() => handleImageClick(row.image)}
+                                />
+                              )}
+                            </td>
+                            <td>{row.isActive ? "True" : "False"}</td>
+                            <td>
+                              <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
+                                <FontAwesomeIcon icon={faEdit} />
+                              </Button>
+                              <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
+                                <FontAwesomeIcon icon={faTrash} />
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colSpan="8">
+                            <div className="d-flex justify-content-center mt-3">
+                              <Button
+                                variant="light"
+                                disabled={currentPage === 1}
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                className="me-2"
+                              >
+                                <FontAwesomeIcon icon={faAngleLeft} />
+                              </Button>
+                              <Button
+                                variant="light"
+                                disabled={currentItems.length < itemsPerPage}
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                className="ms-2"
+                              >
+                                <FontAwesomeIcon icon={faAngleRight} />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </Table>
+                    <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
+                      <Modal.Header>
+                        <Modal.Title>Edit Blog</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Form>
+                          <Form.Group className="mb-3" controlId="editHeading">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="text" value={editName} onChange={(e) => setEditName(e.target.value)} />
+                          </Form.Group>
+                          <Form.Group className="mb-3" controlId="editDate">
+                            <Form.Label>Message</Form.Label>
+                            <Form.Control type="text" value={editMessage} onChange={(e) => setEditMessage(e.target.value)} />
+                          </Form.Group>
+                          <Form.Group id="rating">
+                            <Form.Label>Rating</Form.Label>
+                            <InputGroup>
+                              <InputGroup.Text>
 
-                          </InputGroup.Text>
-                          <Form.Select required value={editRating} onChange={(e) => setEditRating(e.target.value)}>
-                            <option value="">Select Option</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </Form.Select>
-                        </InputGroup>
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editIsActive">
-                        <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
-                      </Form.Group>
-                    </Form>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setEditMode(false)}>
-                      Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleEditSubmit}>
-                      Save Changes
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-      <Modal show={showModal && !editMode} onHide={handleCloseModal}>
-        <Modal.Header>
-          <Modal.Title>{data.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} onClick={() => setEditMode(true)} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+                              </InputGroup.Text>
+                              <Form.Select required value={editRating} onChange={(e) => setEditRating(e.target.value)}>
+                                <option value="">Select Option</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                              </Form.Select>
+                            </InputGroup>
+                          </Form.Group>
+                          <Form.Group className="mb-3" controlId="editIsActive">
+                            <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
+                          </Form.Group>
+                        </Form>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setEditMode(false)}>
+                          Cancel
+                        </Button>
+                        <Button variant="primary" onClick={handleEditSubmit}>
+                          Save Changes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </Card>
+                </Col>
+              </Row>
+            </Container>
+          </section>
+          </Tab.Pane>
+        </Tab.Content>
+      </Tab.Container>
+          <Modal show={showModal && !editMode} onHide={handleCloseModal}>
+            <Modal.Header>
+              <Modal.Title>{data.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} onClick={() => setEditMode(true)} />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+        );
 };

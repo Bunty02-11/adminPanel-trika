@@ -30,7 +30,7 @@ export default () => {
     };
 
     try {
-      const response = await axios.post('http://65.1.14.171:8000/api/login', requestData);
+      const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/login', requestData);
       const token = response.data.token;
       console.log(response);
       toast.success('Login Successfully');

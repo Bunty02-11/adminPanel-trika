@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal } from '@themesberg/react-bootstrap';
+import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal, Nav, Tab } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 export default () => {
   const [attribbute, setAttribbute] = useState('');
@@ -21,7 +22,7 @@ export default () => {
   const [showModal, setShowModal] = useState(false);
   const [clickedImage, setClickedImage] = useState(null);
   const [editMode, setEditMode] = useState(false);
-
+  const [activeTab, setActiveTab] = useState("form");
 
   // State variables for edit modal
   const [editAttribbute, setEditAttribbute] = useState('');
@@ -49,7 +50,7 @@ export default () => {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await axios.post('http://65.1.14.171:8000/api/create/motivation', pageData, {
+      const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/create/motivation', pageData, {
         headers: {
           Authorization: `${token}`
         }
@@ -75,7 +76,6 @@ export default () => {
     }
   }
 
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   }
@@ -86,7 +86,7 @@ export default () => {
   }
 
   useEffect(() => {
-    axios.get(`http://65.1.14.171:8000/api/get/motivations?page=${currentPage}&perPage=${itemsPerPage}`)
+    axios.get(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/get/motivations?page=${currentPage}&perPage=${itemsPerPage}`)
       .then(response => {
         console.log(response.data);
         setData(response.data);
@@ -99,7 +99,7 @@ export default () => {
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
 
-    axios.delete(`http://65.1.14.171:8000/api/delete/motivation/${id}`, {
+    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/delete/motivation/${id}`, {
       headers: {
         Authorization: `${token}`
       }
@@ -117,8 +117,6 @@ export default () => {
         toast.error('Failed to delete record'); // Display error toast
       });
   }
-
-
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -155,7 +153,7 @@ export default () => {
     };
 
     try {
-      const response = await axios.put(`http://65.1.14.171:8000/api/update/motivation/${editItemId}`, editData, {
+      const response = await axios.put(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/update/motivation/${editItemId}`, editData, {
         headers: {
           Authorization: `${token}`
         }
@@ -169,8 +167,6 @@ export default () => {
       toast.error('Failed to update record');
     }
   }
-
-
 
   // Calculate the index of the first item to display based on the current page and items per page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -189,249 +185,270 @@ export default () => {
           </Breadcrumb>
         </div>
       </div>
-      <section className="d-flex align-items-center my-2 mt-lg-3 mb-lg-5">
-        <Container>
-          <Row>
-            <Col xs={12} lg={12} className="mb-4 mb-lg-0">
-              <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100">
-                <div className="text-center text-md-center mb-4 mt-md-0">
-                  <h3 className="mb-0">Motivation</h3>
-                </div>
-                <Form className="mt-4" onSubmit={handleSubmit}>
-                  <Row>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceName" className="mb-4">
-                        <Form.Label>Attribbute</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Attribbute" value={attribbute} onChange={(e) => setAttribbute(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceDescription" className="mb-4">
-                        <Form.Label>Heading</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Heading" value={heading} onChange={(e) => setHeading(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceImage" className="mb-4">
-                        <Form.Label>Image</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control
-                            type="file"
-                            accept="images/*"
-                            onChange={handleImageUpload}
-                            placeholder="Upload Image"
-                          />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceDescription" className="mb-4">
-                        <Form.Label>Bullet</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_one} onChange={(e) => setBullet_one(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceDescription" className="mb-4">
-                        <Form.Label>Bullet</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_two} onChange={(e) => setBullet_two(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceDescription" className="mb-4">
-                        <Form.Label>Bullet</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_three} onChange={(e) => setBullet_three(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="serviceDescription" className="mb-4">
-                        <Form.Label>Content</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Control as="textarea" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                      <Form.Group id="isActive" className="mb-4">
-                        <Form.Label>Is Active</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>
-                          </InputGroup.Text>
-                          <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
-                            <option value="">Select Option</option>
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                          </Form.Select>
-                        </InputGroup>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Button variant="primary" type="submit" className="w-100 mt-3">
-                    Submit
-                  </Button>
-                </Form>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-      <section>
-        <Container>
-          <Row>
-            <Col xs={12} lg={12}>
-              <Card border="light" className="shadow-sm">
-                <Card.Header>
-                  <Row className="align-items-center">
-                    <Col>
-                      <h5>Motivation Banner</h5>
-                    </Col>
-                  </Row>
-                </Card.Header>
-                <Table responsive className="align-items-center table-flush">
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Attribbute</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Heading</th>
-                      <th scope="col">Content</th>
-                      <th scope="col">bullet_one</th>
-                      <th scope="col">bullet_two</th>
-                      <th scope="col">bullet_three</th>
-                      <th scope="col">isActive</th>
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentItems.map((row, index) => (
-                      <tr key={index}>
-                        <td>{indexOfFirstItem + index + 1}</td>
-                        <td>{row.Attribbute}</td>
-                        <td>
-                          {row.Image && (
-                            <img
-                              src={row.Image}
-                              alt="Image"
-                              style={{ maxWidth: "100px", cursor: "pointer" }}
-                              onClick={() => handleImageClick(row.Image)}
-                            />
-                          )}
-                        </td>
-                        <td>{row.Heading}</td>
-                        <td>{row.content}</td>
-                        <td>{row.bullet_one}</td>
-                        <td>{row.bullet_two}</td>
-                        <td>{row.bullet_three}</td>
-                        <td>{row.isActive ? "True" : "False"}</td>
-                        <td>
-                          <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
-                            <FontAwesomeIcon icon={faEdit} />
-                          </Button>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                          </Button>
+      <Tab.Container defaultActiveKey="home">
+        <Nav fill variant="pills" className="flex-column flex-sm-row">
+          <Nav.Item>
+            <Nav.Link eventKey="home" className="mb-sm-3 mb-md-0">
+              Form
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="profile" className="mb-sm-3 mb-md-0">
+              Table
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+        <Tab.Content>
+          <Tab.Pane eventKey="home" className="py-4">
 
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="8">
-                        <div className="d-flex justify-content-center mt-3">
-                          <Button
-                            variant="light"
-                            disabled={currentPage === 1}
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            className="me-2"
-                          >
-                            <FontAwesomeIcon icon={faAngleLeft} />
+            <section className="d-flex align-items-center my-2 mt-lg-3 mb-lg-5">
+              <Container>
+                <Row>
+                  <Col xs={12} lg={12} className="mb-4 mb-lg-0">
+                    <div className="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100">
+                      <div className="text-center text-md-center mb-4 mt-md-0">
+                        <h3 className="mb-0">Motivation</h3>
+                      </div>
+                      <Form className="mt-4" onSubmit={handleSubmit}>
+                        <Row>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceName" className="mb-4">
+                              <Form.Label>Attribbute</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Attribbute" value={attribbute} onChange={(e) => setAttribbute(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceDescription" className="mb-4">
+                              <Form.Label>Heading</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Heading" value={heading} onChange={(e) => setHeading(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceImage" className="mb-4">
+                              <Form.Label>Image</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control
+                                  type="file"
+                                  accept="images/*"
+                                  onChange={handleImageUpload}
+                                  placeholder="Upload Image"
+                                />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceDescription" className="mb-4">
+                              <Form.Label>Bullet</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_one} onChange={(e) => setBullet_one(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceDescription" className="mb-4">
+                              <Form.Label>Bullet</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_two} onChange={(e) => setBullet_two(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceDescription" className="mb-4">
+                              <Form.Label>Bullet</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control autoFocus required type="text" placeholder="Bullet" value={bullet_three} onChange={(e) => setBullet_three(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="serviceDescription" className="mb-4">
+                              <Form.Label>Content</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Control as="textarea" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                            <Form.Group id="isActive" className="mb-4">
+                              <Form.Label>Is Active</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Text>
+                                </InputGroup.Text>
+                                <Form.Select required value={isActive} onChange={(e) => setIsActive(e.target.value)}>
+                                  <option value="">Select Option</option>
+                                  <option value="true">True</option>
+                                  <option value="false">False</option>
+                                </Form.Select>
+                              </InputGroup>
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Button variant="primary" type="submit" className="w-100 mt-3">
+                          Submit
+                        </Button>
+                      </Form>
+                    </div>
+                  </Col>
+                </Row>
+              </Container>
+            </section>
+          </Tab.Pane>
+          <Tab.Pane eventKey="profile" className="py-4">
+            <section>
+              <Container>
+                <Row>
+                  <Col xs={12} lg={12}>
+                    <Card border="light" className="shadow-sm">
+                      <Card.Header>
+                        <Row className="align-items-center">
+                          <Col>
+                            <h5>Motivation Banner</h5>
+                          </Col>
+                        </Row>
+                      </Card.Header>
+                      <Table responsive className="align-items-center table-flush">
+                        <thead className="thead-light">
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Attribbute</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Heading</th>
+                            <th scope="col">Content</th>
+                            <th scope="col">bullet_one</th>
+                            <th scope="col">bullet_two</th>
+                            <th scope="col">bullet_three</th>
+                            <th scope="col">isActive</th>
+                            <th scope="col">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {currentItems.map((row, index) => (
+                            <tr key={index}>
+                              <td>{indexOfFirstItem + index + 1}</td>
+                              <td>{row.Attribbute}</td>
+                              <td>
+                                {row.Image && (
+                                  <img
+                                    src={row.Image}
+                                    alt="Image"
+                                    style={{ maxWidth: "100px", cursor: "pointer" }}
+                                    onClick={() => handleImageClick(row.Image)}
+                                  />
+                                )}
+                              </td>
+                              <td>{row.Heading}</td>
+                              <td>{row.content}</td>
+                              <td>{row.bullet_one}</td>
+                              <td>{row.bullet_two}</td>
+                              <td>{row.bullet_three}</td>
+                              <td>{row.isActive ? "True" : "False"}</td>
+                              <td>
+                                <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </Button>
+                                <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
+                                  <FontAwesomeIcon icon={faTrash} />
+                                </Button>
+
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colSpan="8">
+                              <div className="d-flex justify-content-center mt-3">
+                                <Button
+                                  variant="light"
+                                  disabled={currentPage === 1}
+                                  onClick={() => handlePageChange(currentPage - 1)}
+                                  className="me-2"
+                                >
+                                  <FontAwesomeIcon icon={faAngleLeft} />
+                                </Button>
+                                <Button
+                                  variant="light"
+                                  disabled={currentItems.length < itemsPerPage}
+                                  onClick={() => handlePageChange(currentPage + 1)}
+                                  className="ms-2"
+                                >
+                                  <FontAwesomeIcon icon={faAngleRight} />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </Table>
+                      <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
+                        <Modal.Header>
+                          <Modal.Title>Edit Blog</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <Form>
+                            <Form.Group className="mb-3" controlId="editHeading">
+                              <Form.Label>Attribbute</Form.Label>
+                              <Form.Control type="text" value={editAttribbute} onChange={(e) => setEditAttribbute(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="editHeading">
+                              <Form.Label>Heading</Form.Label>
+                              <Form.Control type="text" value={editHeading} onChange={(e) => setEditHeading(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="editDate">
+                              <Form.Label>Content</Form.Label>
+                              <Form.Control type="text" value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="editDescription">
+                              <Form.Label>Bullet_one</Form.Label>
+                              <Form.Control as="textarea" rows={3} value={editBullet_one} onChange={(e) => setEditBullet_one(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="editTagline">
+                              <Form.Label>Bullet_two</Form.Label>
+                              <Form.Control type="text" value={editBullet_two} onChange={(e) => setEditBullet_two(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="editTagline">
+                              <Form.Label>Bullet_three</Form.Label>
+                              <Form.Control type="text" value={editBullet_three} onChange={(e) => setEditBullet_three(e.target.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="editIsActive">
+                              <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
+                            </Form.Group>
+                          </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="secondary" onClick={() => setEditMode(false)}>
+                            Cancel
                           </Button>
-                          <Button
-                            variant="light"
-                            disabled={currentItems.length < itemsPerPage}
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            className="ms-2"
-                          >
-                            <FontAwesomeIcon icon={faAngleRight} />
+                          <Button variant="primary" onClick={handleEditSubmit}>
+                            Save Changes
                           </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </Table>
-                <Modal show={showModal && editMode} onHide={() => setEditMode(false)}>
-                  <Modal.Header>
-                    <Modal.Title>Edit Blog</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form>
-                      <Form.Group className="mb-3" controlId="editHeading">
-                        <Form.Label>Attribbute</Form.Label>
-                        <Form.Control type="text" value={editAttribbute} onChange={(e) => setEditAttribbute(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editHeading">
-                        <Form.Label>Heading</Form.Label>
-                        <Form.Control type="text" value={editHeading} onChange={(e) => setEditHeading(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editDate">
-                        <Form.Label>Content</Form.Label>
-                        <Form.Control type="text" value={editContent} onChange={(e) => setEditContent(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editDescription">
-                        <Form.Label>Bullet_one</Form.Label>
-                        <Form.Control as="textarea" rows={3} value={editBullet_one} onChange={(e) => setEditBullet_one(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editTagline">
-                        <Form.Label>Bullet_two</Form.Label>
-                        <Form.Control type="text" value={editBullet_two} onChange={(e) => setEditBullet_two(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editTagline">
-                        <Form.Label>Bullet_three</Form.Label>
-                        <Form.Control type="text" value={editBullet_three} onChange={(e) => setEditBullet_three(e.target.value)} />
-                      </Form.Group>
-                      <Form.Group className="mb-3" controlId="editIsActive">
-                        <Form.Check type="checkbox" label="Is Active" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
-                      </Form.Group>
-                    </Form>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setEditMode(false)}>
-                      Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleEditSubmit}>
-                      Save Changes
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </section>
+                        </Modal.Footer>
+                      </Modal>
+                    </Card>
+                  </Col>
+                </Row>
+              </Container>
+            </section>
+          </Tab.Pane>
+        </Tab.Content>
+      </Tab.Container>
       <Modal show={showModal && !editMode} onHide={handleCloseModal}>
         <Modal.Header>
           <Modal.Title>{data.name}</Modal.Title>

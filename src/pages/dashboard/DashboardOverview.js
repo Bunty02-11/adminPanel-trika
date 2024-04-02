@@ -13,7 +13,7 @@ export default () => {
   const [customers, setCustomers] = React.useState([]);
 
   React.useEffect(() => {
-    fetch('http://65.1.14.171:8000/api/get/work')
+    fetch('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/get/work')
       .then(response => response.json())
       .then(data => setCustomers(data))
       .catch(error => console.error(error));
@@ -26,7 +26,7 @@ export default () => {
     const token = localStorage.getItem('token');
     const headers = token ? { Authorization: ` ${token}` } : {};
 
-    fetch('http://65.1.14.171:8000/api/getcontact', { headers })
+    fetch('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/getcontact', { headers })
       .then(response => response.json())
       .then(data => setContacts(data))
       .catch(error => console.error(error));

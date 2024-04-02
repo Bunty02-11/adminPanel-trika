@@ -29,7 +29,7 @@ export default () => {
     const token = localStorage.getItem('token');
   
     try {
-      const response = await axios.post('http://65.1.14.171:8000/api/addimage', pageData, {
+      const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/addimage', pageData, {
         headers: {
           Authorization: `${token}`
         }
@@ -60,7 +60,7 @@ export default () => {
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
   
-    axios.delete(`http://65.1.14.171:8000/api/deleteimage/${id}`, {
+    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/deleteimage/${id}`, {
       headers: {
         Authorization: `${token}`
       }
@@ -78,7 +78,7 @@ export default () => {
   
 
   useEffect(() => {
-    axios.get('http://65.1.14.171:8000/api/getimage')
+    axios.get('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/getimage')
       .then(response => {
         console.log(response.data);
         setData(response.data);

@@ -30,7 +30,7 @@ export default () => {
     const token = localStorage.getItem('token');
   
     try {
-      const response = await axios.post('http://65.1.14.171:8000/api/uploadBanner', pageData, {
+      const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/uploadBanner', pageData, {
         headers: {
           Authorization: `${token}`
         }
@@ -60,7 +60,7 @@ export default () => {
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
   
-    axios.delete(`http://65.1.14.171:8000/api/banner/${id}`, {
+    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/banner/${id}`, {
       headers: {
         Authorization: `${token}`
       }
@@ -81,7 +81,7 @@ export default () => {
   
 
   useEffect(() => {
-    axios.get('http://65.1.14.171:8000/api/banner')
+    axios.get('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/banner')
       .then(response => {
         console.log(response.data.banner);
         setData(response.data.banner);
