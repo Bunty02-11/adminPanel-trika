@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit, faEye} from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Card, Button, Table, Container, InputGroup, Modal, Tab , Nav} from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,6 +17,8 @@ export default () => {
   const [data, setData] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [activeTab, setActiveTab] = useState("form");
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [clickedItem, setClickedItem] = useState(null);
   const itemsPerPage = 10; // Define itemsPerPage
 
   // State variables for edit modal
@@ -65,18 +67,21 @@ export default () => {
     setImageUrl(image);
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = (row) => {
     const token = localStorage.getItem('token');
 
-    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/services/${id}`, {
+    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/services/${row._id}`, {
       headers: {
         Authorization: `${token}`
       }
     })
       .then(response => {
         console.log('Record deleted successfully:', response.data);
-        setData(prevData => prevData.filter(item => item.id !== id));
+        setData(prevData => prevData.filter(item => item.id !== row._id));
         toast.success('Record deleted successfully'); // Display success toast
+
+          // Reload the page
+          window.location.reload();
       })
       .catch(error => {
         console.error('Error deleting record:', error);
@@ -143,6 +148,16 @@ export default () => {
       toast.error('Failed to update record');
     }
   }
+
+  const handleViewDetails = (row) => {
+    setClickedItem(row);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setClickedItem(null);
+  };
 
 
 
@@ -245,15 +260,12 @@ export default () => {
             <section>
               <Container>
                 <Row>
-                  <Col xs={12} lg={8} className="mx-auto">
+                  <Col xs={12} lg={10} className="mx-auto">
                     <Card border="light" className="shadow-sm">
                       <Card.Header>
                         <Row className="align-items-center">
                           <Col>
                             <h5>Service List</h5>
-                          </Col>
-                          <Col className="text-end">
-                            <Button variant="secondary" size="sm">See all</Button>
                           </Col>
                         </Row>
                       </Card.Header>
@@ -262,9 +274,7 @@ export default () => {
                           <tr>
                             <th scope="col">#</th>
                             <th scope="col">Service Name</th>
-                            <th scope="col">Service Description</th>
                             <th scope="col">Service Image</th>
-                            <th scope="col">Active</th>
                             <th scope="col">Actions</th>
                           </tr>
                         </thead>
@@ -273,7 +283,7 @@ export default () => {
                             <tr key={index}>
                               <td>{startIndex + index + 1}</td>
                               <td>{row.serviceName}</td>
-                              <td>{row.serviceDescription}</td>
+                              {/* <td>{row.serviceDescription}</td> */}
                               <td>
                                 {row.serviceImage && (
                                   <img
@@ -284,13 +294,23 @@ export default () => {
                                   />
                                 )}
                               </td>
-                              <td>{row.isActive ? "True" : "False"}</td>
+                              {/* <td>{row.isActive ? "True" : "False"}</td> */}
                               <td>
+                                <Button variant="info" size="sm" onClick={() => handleViewDetails(row)}>
+                                  <FontAwesomeIcon icon={faEye} />
+                                  view
+                                </Button>
+                                <br/>
+                                <br/>
                                 <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
                                   <FontAwesomeIcon icon={faEdit} />
+                                  Edit
                                 </Button>
-                                <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                                <br/>
+                                <br/>
+                                <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                                   <FontAwesomeIcon icon={faTrash} />
+                                  Delete
                                 </Button>
                               </td>
                             </tr>
@@ -353,6 +373,25 @@ export default () => {
                   </Col>
                 </Row>
               </Container>
+              <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                <Modal.Header>
+                  <Modal.Title>Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {clickedItem && (
+                    <>
+                      <p><strong>serviceName:</strong> {clickedItem.serviceName}</p>
+                      <p><strong>serviceDescription:</strong> {clickedItem.serviceDescription}</p>
+                      <p><strong>Active:</strong> {clickedItem.isActive ? "Yes" : "No"}</p>
+                    </>
+                  )}
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                    Close
+                  </Button>
+                </Modal.Footer>
+              </Modal>
             </section>
           </Tab.Pane>
         </Tab.Content>

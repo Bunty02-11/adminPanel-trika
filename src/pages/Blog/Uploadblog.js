@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faTrash, faEdit, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faTrash, faEdit, faAngleLeft, faAngleRight, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal, Tab, Nav } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,6 +19,8 @@ export default () => {
     const [showModal, setShowModal] = useState(false);
     const [clickedImage, setClickedImage] = useState(null);
     const [editMode, setEditMode] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [clickedItem, setClickedItem] = useState(null);
 
     // State variables for edit modal
     const [editHeading, setEditHeading] = useState('');
@@ -150,6 +152,16 @@ export default () => {
         setIsActive(false);
     }
 
+    const handleViewDetails = (row) => {
+        setClickedItem(row);
+        setShowDetailsModal(true);
+    };
+
+    const handleCloseDetailsModal = () => {
+        setShowDetailsModal(false);
+        setClickedItem(null);
+    };
+
     // Calculate the index of the first item to display based on the current page and items per page
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -279,21 +291,21 @@ export default () => {
                                             <Card.Header>
                                                 <Row className="align-items-center">
                                                     <Col>
-                                                        <h5>Blog Banner</h5>
+                                                        <h5>Blog</h5>
                                                     </Col>
                                                 </Row>
                                             </Card.Header>
-                                            <Table responsive className="align-items-center table-flush">
-                                                <thead className="thead-light">
+                                            <Table responsive className="align-items-center table">
+                                                <thead className="thead-dark">
                                                     <tr>
                                                         <th scope="col">#</th>
                                                         <th scope="col">Heading</th>
                                                         <th scope="col">Image</th>
-                                                        <th scope="col">Description</th>
+                                                        {/* <th scope="col">Description</th> */}
                                                         <th scope="col">Date</th>
-                                                        <th scope="col">Tagline</th>
+                                                        {/* <th scope="col">Tagline</th> */}
                                                         <th scope="col">isActive</th>
-                                                        <th scope="col">Actions</th>
+                                                        <th scope="col" a >Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -311,16 +323,26 @@ export default () => {
                                                                     />
                                                                 )}
                                                             </td>
-                                                            <td>{row.description}</td>
+                                                            {/* <td>{row.description}</td> */}
                                                             <td>{row.date}</td>
-                                                            <td>{row.tagline}</td>
+                                                            {/* <td>{row.tagline}</td> */}
                                                             <td>{row.isActive ? "True" : "False"}</td>
                                                             <td>
+                                                                <Button variant="info" size="sm" onClick={() => handleViewDetails(row)}>
+                                                                    <FontAwesomeIcon icon={faEye} />
+                                                                    view
+                                                                </Button>
+                                                                <br />
+                                                                <br />
                                                                 <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
                                                                     <FontAwesomeIcon icon={faEdit} />
+                                                                    Edit
                                                                 </Button>
+                                                                <br />
+                                                                <br />
                                                                 <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                                                                     <FontAwesomeIcon icon={faTrash} />
+                                                                    Delete
                                                                 </Button>
                                                             </td>
                                                         </tr>
@@ -391,6 +413,27 @@ export default () => {
                                     </Col>
                                 </Row>
                             </Container>
+                            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                                <Modal.Header>
+                                    <Modal.Title>Details</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {clickedItem && (
+                                        <>
+                                            <p><strong>Heading:</strong> {clickedItem.heading}</p>
+                                            <p><strong>Description:</strong> {clickedItem.description}</p>
+                                            <p><strong>Date:</strong> {clickedItem.date}</p>
+                                            <p><strong>Tagline:</strong> {clickedItem.tagline}</p>
+                                            <p><strong>Active:</strong> {clickedItem.isActive ? "Yes" : "No"}</p>
+                                        </>
+                                    )}
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                                        Close
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                         </section>
                     </Tab.Pane>
                 </Tab.Content>

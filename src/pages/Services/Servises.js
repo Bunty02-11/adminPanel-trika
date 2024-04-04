@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faQuran, faTrash, faAngleLeft, faAngleRight, faEdit, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Form, Button, InputGroup, Container, Card, Table, Modal, Nav, Tab } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,6 +21,8 @@ export default () => {
   const [showModal, setShowModal] = useState(false);
   const [clickedImage, setClickedImage] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [clickedItem, setClickedItem] = useState(null);
 
   const [editHeading, setEditHeading] = useState('');
   const [editContent, setEditContent] = useState('');
@@ -158,6 +160,16 @@ export default () => {
     setService_name('');
     setIsActive(false);
   }
+
+  const handleViewDetails = (row) => {
+    setClickedItem(row);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setClickedItem(null);
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -298,7 +310,7 @@ export default () => {
                     <Card.Header>
                       <Row className="align-items-center">
                         <Col>
-                          <h5>Motivation Banner</h5>
+                          <h5>Services</h5>
                         </Col>
                       </Row>
                     </Card.Header>
@@ -307,12 +319,7 @@ export default () => {
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Heading</th>
-                          <th scope="col">Content</th>
                           <th scope="col">Image</th>
-                          <th scope="col">service_name</th>
-                          <th scope="col">benfits_heading</th>
-                          <th scope="col">benfits_content</th>
-                          <th scope="col">isActive</th>
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
@@ -321,14 +328,13 @@ export default () => {
                           <tr key={index}>
                             <td>{indexOfFirstItem + index + 1}</td>
                             <td>{row.heading}</td>
-                            <td>
-                              {/* Rendering paragraph content as points */}
+                            {/* <td>
                               <ul>
                                 {row.content.split('. ').map((point, index) => (
                                   <li key={index}>{point}</li>
                                 ))}
                               </ul>
-                            </td>
+                            </td> */}
                             <td>
                               {row.image && (
                                 <img
@@ -339,26 +345,34 @@ export default () => {
                                 />
                               )}
                             </td>
-                            <td>{row.service_name}</td>
-                            <td>{row.benfits_heading}</td>
-                            <td>
-                              {/* Rendering benefits content as points */}
+                            {/* <td>{row.service_name}</td>
+                            <td>{row.benfits_heading}</td> */}
+                            {/* <td>
                               <ul>
                                 {row.benfits_content.split(/\.\s+/).map((point, index) => (
                                   <li key={index}>{point}</li>
                                 ))}
                               </ul>
-                            </td>
-                            <td>{row.isActive ? "True" : "False"}</td>
+                            </td> */}
+                            {/* <td>{row.isActive ? "True" : "False"}</td> */}
                             <td>
-                              <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
-                                <FontAwesomeIcon icon={faEdit} />
-                              </Button>
-
-                              <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
-                                <FontAwesomeIcon icon={faTrash} />
-                              </Button>
-                            </td>
+                                <Button variant="info" size="sm" onClick={() => handleViewDetails(row)}>
+                                  <FontAwesomeIcon icon={faEye} />
+                                  view
+                                </Button>
+                                <br/>
+                                <br/>
+                                <Button variant="info" size="sm" onClick={() => handleEditModal(row)}>
+                                  <FontAwesomeIcon icon={faEdit} />
+                                  Edit
+                                </Button>
+                                <br/>
+                                <br/>
+                                <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
+                                  <FontAwesomeIcon icon={faTrash} />
+                                  Delete
+                                </Button>
+                              </td>
                           </tr>
                         ))}
                       </tbody>
@@ -432,6 +446,28 @@ export default () => {
                 </Col>
               </Row>
             </Container>
+            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                <Modal.Header>
+                  <Modal.Title>Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {clickedItem && (
+                    <>
+                      <p><strong>Heading:</strong> {clickedItem.Heading}</p>
+                      <p><strong>Service_name:</strong> {clickedItem.service_name}</p>
+                      <p><strong>Content:</strong> {clickedItem.content}</p>
+                      <p><strong>Benfits_heading:</strong> {clickedItem.benfits_heading}</p>
+                      <p><strong>Benfits_content:</strong> {clickedItem.benfits_content}</p>
+                      <p><strong>Active:</strong> {clickedItem.isActive ? "Yes" : "No"}</p>
+                    </>
+                  )}
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                    Close
+                  </Button>
+                </Modal.Footer>
+              </Modal>
           </section>
         </Tab.Pane>
       </Tab.Content>
