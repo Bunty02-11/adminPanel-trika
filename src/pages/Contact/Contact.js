@@ -3,6 +3,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faTrash, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Col, Row, Button, Container, Card, Table, Modal } from '@themesberg/react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 
 export default () => {
   const [data, setData] = useState([]);
@@ -21,25 +22,36 @@ export default () => {
 
     axios.get(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/getcontact`, { headers })
       .then(response => {
-        console.log(response.data);
+
         setData(response.data);
       })
       .catch(error => {
-        console.log(error);
       });
   }, [currentPage]);
 
 
-  const handleDelete = (id) => {
-    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/delete/motivation/${id}`)
+  const handleDelete = (row) => {
+    const token = localStorage.getItem('token');
+    console.log(row);
+    axios.delete('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/deletecontact', {
+      data: { id: row },
+      headers: {
+        Authorization: `${token}`
+      }
+
+    })
       .then(response => {
-        console.log('Record deleted successfully:', response.data);
-        setData(prevData => prevData.filter(item => item.id !== id));
+        setData(prevData => prevData.filter(item => item.row !== row));
+        toast.success('Record deleted successfully');
+
+        window.location.reload();
       })
       .catch(error => {
-        console.error('Error deleting record:', error);
+        toast.error('Failed to delete record');
       });
   }
+
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -57,6 +69,7 @@ export default () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="d-xl-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-2">
         <div className="d-block mb-4 mb-xl-0">
           <Breadcrumb className="d-none d-md-inline-block" listProps={{ className: "breadcrumb-dark breadcrumb-transparent" }}>
@@ -99,7 +112,7 @@ export default () => {
                         <td>{row.subject}</td>
                         <td>{row.message}</td>
                         <td>
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(row.id)}>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </td>
@@ -136,19 +149,6 @@ export default () => {
           </Row>
         </Container>
       </section>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Zoomed Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {clickedImage && <img src={clickedImage} alt="Zoomed Image" style={{ maxWidth: "100%" }} />}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

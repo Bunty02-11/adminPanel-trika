@@ -66,7 +66,7 @@ export default () => {
       }
     })
     .then(response => {
-      console.log('Record deleted successfully:', response.data);
+      ;
       setData(prevData => prevData.filter(item => item.id !== id));
       toast.success('Record deleted successfully'); // Display success toast
   
@@ -74,7 +74,7 @@ export default () => {
       window.location.reload();
     })
     .catch(error => {
-      console.error('Error deleting record:', error);
+      
       toast.error('Failed to delete record'); // Display error toast
     });
   }
@@ -87,7 +87,6 @@ export default () => {
         setData(response.data.banner);
       })
       .catch(error => {
-        console.log(error);
       });
   }, []);
 

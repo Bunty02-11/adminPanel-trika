@@ -66,12 +66,11 @@ export default () => {
       }
     })
     .then(response => {
-      console.log('Record deleted successfully:', response.data);
       setData(prevData => prevData.filter(item => item.id !== id));
       toast.success('Record deleted successfully'); // Display success toast
     })
     .catch(error => {
-      console.error('Error deleting record:', error);
+      
       toast.error('Failed to delete record'); // Display error toast
     });
   }
@@ -80,11 +79,10 @@ export default () => {
   useEffect(() => {
     axios.get('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/getimage')
       .then(response => {
-        console.log(response.data);
+        
         setData(response.data);
       })
       .catch(error => {
-        console.log(error);
       });
   }, []);
 

@@ -88,11 +88,10 @@ export default () => {
   useEffect(() => {
     axios.get(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/get/motivations?page=${currentPage}&perPage=${itemsPerPage}`)
       .then(response => {
-        console.log(response.data);
+        
         setData(response.data);
       })
       .catch(error => {
-        console.log(error);
       });
   }, [currentPage, itemsPerPage]);
 
@@ -105,7 +104,6 @@ export default () => {
       }
     })
       .then(response => {
-        console.log('Record deleted successfully:', response.data);
         setData(prevData => prevData.filter(item => item.id !== id));
         toast.success('Record deleted successfully'); // Display success toast
 
@@ -113,7 +111,6 @@ export default () => {
         window.location.reload();
       })
       .catch(error => {
-        console.error('Error deleting record:', error);
         toast.error('Failed to delete record'); // Display error toast
       });
   }
@@ -158,12 +155,11 @@ export default () => {
           Authorization: `${token}`
         }
       });
-      console.log('Updated data:', response.data);
+      
       toast.success('Data updated successfully');
       setShowModal(false);
       setData(prevData => prevData.map(item => item._id === editItemId ? { ...item, ...editData } : item));
     } catch (error) {
-      console.error('Error updating record:', error);
       toast.error('Failed to update record');
     }
   }

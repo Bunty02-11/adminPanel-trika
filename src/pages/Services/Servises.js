@@ -81,7 +81,6 @@ export default () => {
         setData(response.data);
       })
       .catch(error => {
-        console.log(error);
       });
   }, [currentPage, itemsPerPage]);
 
@@ -98,7 +97,6 @@ export default () => {
         window.location.reload();
       })
       .catch(error => {
-        console.error('Error deleting record:', error);
         toast.error('Failed to delete record');
       });
   }
@@ -113,7 +111,6 @@ export default () => {
   }
 
   const handleEditModal = (row) => {
-    console.log(row);
     setEditItemId(row._id);
     setEditHeading(row.heading);
     setEditContent(row.content);
@@ -146,7 +143,6 @@ export default () => {
       setShowModal(false);
       setData(prevData => prevData.map(item => item._id === editItemId ? { ...item, ...editData } : item));
     } catch (error) {
-      console.error('Error updating record:', error);
       toast.error('Failed to update record');
     }
   }

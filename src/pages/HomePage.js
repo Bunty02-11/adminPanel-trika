@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Routes } from "../routes";
 
-// pages
+// Import your components and pages...
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import Preloader from "../components/Preloader";
+
+// Import all your pages/components here...
 import Upgrade from "./Upgrade";
 import DashboardOverview from "./dashboard/DashboardOverview";
 import Transactions from "./Transactions";
@@ -11,7 +17,6 @@ import BootstrapTables from "./tables/BootstrapTables";
 import Carousel from "./Home/Carousel";
 import Motivation from './Home/Motivation';
 import Service from './Home/Service';
-
 import Signin from "./examples/Signin";
 import Signup from "./examples/Signup";
 import ForgotPassword from "./examples/ForgotPassword";
@@ -19,22 +24,6 @@ import ResetPassword from "./examples/ResetPassword";
 import Lock from "./examples/Lock";
 import NotFoundPage from "./examples/NotFound";
 import ServerError from "./examples/ServerError";
-
-// documentation pages
-import DocsOverview from "./documentation/DocsOverview";
-import DocsDownload from "./documentation/DocsDownload";
-import DocsQuickStart from "./documentation/DocsQuickStart";
-import DocsLicense from "./documentation/DocsLicense";
-import DocsFolderStructure from "./documentation/DocsFolderStructure";
-import DocsBuild from "./documentation/DocsBuild";
-import DocsChangelog from "./documentation/DocsChangelog";
-
-// components
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import Preloader from "../components/Preloader";
-
 import Accordion from "./components/Accordion";
 import Alerts from "./components/Alerts";
 import Badges from "./components/Badges";
@@ -58,6 +47,25 @@ import Contact from './Contact/Contact';
 import Uploadblog from './Blog/Uploadblog';
 import Servises from './Services/Servises';
 
+const ProtectedRoute = ({ component: Component, ...rest }) => {
+  // Check if user is authenticated
+  const isAuthenticated = () => {
+    // Implement your authentication logic here, e.g., checking if user is logged in
+    // For demonstration purpose, let's assume there's a isAuthenticated function
+    return isAuthenticated(); // Implement this function
+  }
+
+  return (
+    <Route {...rest} render={props => (
+      isAuthenticated() ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to={Routes.Signin.path} />
+      )
+    )} />
+  );
+};
+
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
 
@@ -67,7 +75,12 @@ const RouteWithLoader = ({ component: Component, ...rest }) => {
   }, []);
 
   return (
-    <Route {...rest} render={props => ( <> <Preloader show={loaded ? false : true} /> <Component {...props} /> </> ) } />
+    <Route {...rest} render={props => (
+      <>
+        <Preloader show={loaded ? false : true} />
+        <Component {...props} />
+      </>
+    )} />
   );
 };
 
@@ -95,27 +108,27 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
       <>
         <Preloader show={loaded ? false : true} />
         <Sidebar />
-
         <main className="content">
           <Navbar />
           <Component {...props} />
           <Footer toggleSettings={toggleSettings} showSettings={showSettings} />
         </main>
       </>
-    )}
-    />
+    )} />
   );
 };
 
 export default () => (
   <Switch>
     <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
-    <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
-    <RouteWithLoader exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
-    <RouteWithLoader exact path={Routes.ResetPassword.path} component={ResetPassword} />
-    <RouteWithLoader exact path={Routes.Lock.path} component={Lock} />
-    <RouteWithLoader exact path={Routes.NotFound.path} component={NotFoundPage} />
-    <RouteWithLoader exact path={Routes.ServerError.path} component={ServerError} />
+   
+    <ProtectedRoute exact path={Routes.Signup.path} component={Signup} />
+    <ProtectedRoute exact path={Routes.ForgotPassword.path} component={ForgotPassword} />
+    <ProtectedRoute exact path={Routes.ResetPassword.path} component={ResetPassword} />
+    <ProtectedRoute exact path={Routes.Lock.path} component={Lock} />
+    <ProtectedRoute exact path={Routes.NotFound.path} component={NotFoundPage} />
+    <ProtectedRoute exact path={Routes.ServerError.path} component={ServerError} />
+
 
     {/* pages */}
     <RouteWithSidebar exact path={Routes.DashboardOverview.path} component={DashboardOverview} />
@@ -157,15 +170,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.Tabs.path} component={Tabs} />
     <RouteWithSidebar exact path={Routes.Tooltips.path} component={Tooltips} />
     <RouteWithSidebar exact path={Routes.Toasts.path} component={Toasts} />
-
-    {/* documentation */}
-    <RouteWithSidebar exact path={Routes.DocsOverview.path} component={DocsOverview} />
-    <RouteWithSidebar exact path={Routes.DocsDownload.path} component={DocsDownload} />
-    <RouteWithSidebar exact path={Routes.DocsQuickStart.path} component={DocsQuickStart} />
-    <RouteWithSidebar exact path={Routes.DocsLicense.path} component={DocsLicense} />
-    <RouteWithSidebar exact path={Routes.DocsFolderStructure.path} component={DocsFolderStructure} />
-    <RouteWithSidebar exact path={Routes.DocsBuild.path} component={DocsBuild} />
-    <RouteWithSidebar exact path={Routes.DocsChangelog.path} component={DocsChangelog} />
 
     <Redirect to={Routes.Signin.path} />
   </Switch>
