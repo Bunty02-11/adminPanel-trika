@@ -303,7 +303,7 @@ export default () => {
                                 </Button>
                                 <br/>
                                 <br/>
-                                <Button variant="danger" size="sm" onClick={() => handleDelete(row._id)}>
+                                <Button variant="danger" size="sm" onClick={() => handleDelete(row)}>
                                   <FontAwesomeIcon icon={faTrash} />
                                   Delete
                                 </Button>

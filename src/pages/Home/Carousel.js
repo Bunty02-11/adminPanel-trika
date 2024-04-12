@@ -6,7 +6,7 @@ import { Breadcrumb, Modal } from '@themesberg/react-bootstrap';
 import { Col, Row, Form, Card, Button, Table, Container, InputGroup } from '@themesberg/react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify/dist/react-toastify.cjs.development';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {triggerFunction,getPredefinedUrl} from '../components/SignedUrl';
 
 export default () => {
   const [name, setName] = useState('');
@@ -18,39 +18,129 @@ export default () => {
   const [showModal, setShowModal] = useState(false); // State to control the modal visibility
 
   const itemsPerPage = 3;
+  //////////Mine
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileExtension, setFileExtension] = useState('');
+  const [isFileSelected, setIsFileSelected] = useState(false);
+  const [predefinedurl,setPredefinedurl]=useState("");
+  const [folderName, setFolderName] = useState(''); // State for folder name
+  const [folders, setFolders] = useState([]); // State for storing folder names
+  const [url, setUrl] = useState('');
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const pageData = new FormData();
-    pageData.append('name', name);
-    pageData.append('file', carouselImages);
-    pageData.append('isActive', isActive);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Read file extension
+      const fileExtension = file.name.split('.').pop();
+      setSelectedFile(file);
+      setFileExtension(fileExtension);
+      let arr1=triggerFunction(fileExtension, folderName)
+      console.log(arr1)
+      setUrl(arr1[0]); // Update URL with folderName
+      setPredefinedurl(arr1[1])
+      setIsFileSelected(true); // Enable upload button
+    } else {
+      setSelectedFile(null);
+      setFileExtension('');
+      setIsFileSelected(false); // Disable upload button
+    }
+  };
+
+  const handleUpload = () => {
+    if (!selectedFile) return;
+  
+   
+  
     const token = localStorage.getItem('token');
   
-    try {
-      const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/addimage', pageData, {
-        headers: {
-          Authorization: `${token}`
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const fileContent = event.target.result;
+      // Perform your upload logic here
+      // For demonstration, let's just log the file extension and content
+      console.log('Selected File Extension:', fileExtension);
+      console.log('File Content:', fileContent);
+  
+      try {
+        // Example: Uploading file content using Fetch
+        const responseFile = await fetch(url, {
+          method: 'PUT',
+          body: fileContent,
+          headers: {
+            'Content-Type': 'application/octet-stream', // Set appropriate content type
+          },
+          mode: 'cors', // Enable CORS
+        });
+        if (!responseFile.ok) {
+          throw new Error('Network response was not ok');
         }
-      });
-      console.log(response);
-      toast.success('Image added successfully'); // Call toast.success after successful addition
+        console.log('File uploaded successfully:', responseFile);
+        console.log(getPredefinedUrl(predefinedurl))
+
+        const pageData = new FormData();
+        pageData.append('name', name);
+        pageData.append('file', carouselImages);
+        pageData.append('isActive', isActive);
+        // Example: Posting additional form data using Axios
+        const responseFormData = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/addimage', pageData, {
+          headers: {
+            Authorization: `${token}`,
+            'Content-Type': 'multipart/form-data', // Set appropriate content type
+          },
+        });
+        console.log(responseFormData);
+        toast.success('Image added successfully'); // Call toast.success after successful addition
   
-      // Reload page after successful submission
-      window.location.reload();
+        // Reload page after successful submission
+        window.location.reload();
   
-      // Clear form data after submission
-      setName('');
-      setCarouselImages(null);
-      setIsActive(false);
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to add image'); // Display error toast if addition fails
-    }
-  }
+        // Clear form data after submission
+        setName('');
+        setCarouselImages(null);
+        setIsActive(false);
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('Failed to add image'); // Display error toast if addition fails
+      }
+    };
   
+    reader.readAsArrayBuffer(selectedFile);
+  };
+
+
+  /////////////////////////////////////
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const pageData = new FormData();
+  //   pageData.append('name', name);
+  //   pageData.append('file', carouselImages);
+  //   pageData.append('isActive', isActive);
+  //   console.log(pageData)
+
+  //   const token = localStorage.getItem('token');
   
+  //   try {
+  //     const response = await axios.post('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/addimage', pageData, {
+  //     headers: {
+  //         Authorization: ${token}
+  //       }
+  //     });
+  //     console.log(response);
+  //     toast.success('Image added successfully'); // Call toast.success after successful addition
+  
+  //     // Reload page after successful submission
+  //     window.location.reload();
+  
+  //     // Clear form data after submission
+  //     setName('');
+  //     setCarouselImages(null);
+  //     setIsActive(false);
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     toast.error('Failed to add image'); // Display error toast if addition fails
+  //   }
+  // }
 
   const handleImageUpload = (event) => {
     const image = event.target.files[0];
@@ -60,9 +150,9 @@ export default () => {
   const handleDelete = (id) => {
     const token = localStorage.getItem('token');
   
-    axios.delete(`https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/deleteimage/${id}`, {
+    axios.delete(`https:/r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/deleteimage/${id}`, {
       headers: {
-        Authorization: `${token}`
+        Authorization: token
       }
     })
     .then(response => {
@@ -70,14 +160,15 @@ export default () => {
       toast.success('Record deleted successfully'); // Display success toast
     })
     .catch(error => {
-      
       toast.error('Failed to delete record'); // Display error toast
     });
   }
   
+  
 
   useEffect(() => {
     axios.get('https://r8bkfpncj3.execute-api.ap-south-1.amazonaws.com/production/api/getimage')
+    // axios.get('http://localhost:8000/api/getimage')
       .then(response => {
         
         setData(response.data);
@@ -126,7 +217,8 @@ export default () => {
                 <div className="text-center text-md-center mb-4 mt-md-0">
                   <h3 className="mb-0">Carousel</h3>
                 </div>
-                <Form className="mt-4" onSubmit={handleSubmit}>
+                {/* handleSubmit */}
+                <Form className="mt-4" onSubmit={(e) => handleUpload(e)}>
                   <Form.Group id="name" className="mb-4">
                     <Form.Label>Name</Form.Label>
                     <InputGroup>
@@ -142,8 +234,8 @@ export default () => {
                       </InputGroup.Text>
                       <Form.Control
                         type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
+                        // accept="image/*"
+                        onChange={handleFileChange}
                         placeholder="Upload Image"
                       />
                     </InputGroup>
@@ -163,6 +255,7 @@ export default () => {
                   <Button variant="primary" type="submit" className="w-100">
                     Submit
                   </Button>
+                  
                 </Form>
               </div>
             </Col>
@@ -248,6 +341,6 @@ export default () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
-  );
+    </>
+  );
 };
